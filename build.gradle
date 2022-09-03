@@ -1,0 +1,32 @@
+allprojects {
+    group = "$packageGroup"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of("$projectJavaVersion"))
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    dependencyManagement {
+        dependencies {
+            dependency "org.springframework.boot:spring-boot-starter:$springBootVersion"
+            dependency "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+            dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+            dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+        }
+    }
+}

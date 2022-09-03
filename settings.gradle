@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.13.RELEASE"
+    }
+}
+
+rootProject.name = "$projectName"
+
+include 'app'
