@@ -2,22 +2,10 @@ plugins {
     id 'java'
 }
 
-group 'ru.ct'
-version 'unspecified'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }
-//dependencies {
-//    implementation('org.springframework.boot:spring-boot-starter-web')
-//    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-//}
-
 
 test {
     useJUnitPlatform()
