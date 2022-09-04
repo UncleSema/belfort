@@ -19,3 +19,5 @@ buildscript {
 rootProject.name = "$projectName"
 
 include 'app'
+include 'trading-bot'
+
