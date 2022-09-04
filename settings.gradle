@@ -21,4 +21,5 @@ rootProject.name = "$projectName"
 include 'app'
 include 'trading-bot'
 include 'telegram-service'
+include 'tinkoff-service'
 
