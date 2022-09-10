@@ -15,14 +15,11 @@ import java.util.Map;
 @Configuration
 public class ConsumerConfig {
 
-    @Value(value = "localhost:29092")
-    private String bootstrapAddress;
-
-    @Value(value = "trading_bot_consumers")
-    private String groupId;
-
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, String> consumerFactory(
+            @Value(value = "localhost:29092") String bootstrapAddress,
+            @Value(value = "trading_bot_consumers") String groupId
+    ) {
         return new DefaultKafkaConsumerFactory<>(Map.of(
                 org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
                 org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, groupId,
@@ -37,7 +34,7 @@ public class ConsumerConfig {
 
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory("localhost:29092", "trading_bot_consumers"));
         return factory;
     }
 }

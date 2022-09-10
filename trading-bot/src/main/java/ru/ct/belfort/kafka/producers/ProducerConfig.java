@@ -13,11 +13,10 @@ import java.util.Map;
 @Configuration
 public class ProducerConfig {
 
-    @Value(value = "localhost:29092")
-    private String bootstrapAddress;
-
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, String> producerFactory(
+            @Value(value = "localhost:29092") String bootstrapAddress
+    ) {
         return new DefaultKafkaProducerFactory<>(Map.of(
                 org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
                 org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
@@ -27,6 +26,6 @@ public class ProducerConfig {
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+        return new KafkaTemplate<>(producerFactory("localhost:29092"));
     }
 }
