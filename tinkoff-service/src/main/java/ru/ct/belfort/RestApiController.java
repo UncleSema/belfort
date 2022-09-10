@@ -10,4 +10,5 @@ public class RestApiController {
     public String hello() {
         return "Tinkoff service is working!";
     }
+
 }
