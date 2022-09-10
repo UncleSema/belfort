@@ -11,7 +11,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 @Service
 public class IdeasProducer {
 
-    public KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
     public IdeasProducer(KafkaTemplate<String, String> kafkaTemplate) {
