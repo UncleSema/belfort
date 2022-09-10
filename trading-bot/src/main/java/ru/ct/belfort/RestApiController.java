@@ -10,14 +10,22 @@ import ru.ct.belfort.kafka.producers.IdeasProducer;
 @RequestMapping("/trading")
 public class RestApiController {
 
+    private final IdeasProducer producer;
+
+    @Autowired
+    public RestApiController(IdeasProducer producer) {
+        this.producer = producer;
+    }
+
     @GetMapping("/hello")
     public String hello() {
         return "Trading bot is working!";
     }
 
-    @GetMapping("/testkafka")
-    public String testKafka(@Autowired IdeasProducer producer) {
+    @GetMapping("/test/producer")
+    public String testProducer() {
         producer.sendMessage("Kafka is working!");
         return "Check console";
     }
+
 }
