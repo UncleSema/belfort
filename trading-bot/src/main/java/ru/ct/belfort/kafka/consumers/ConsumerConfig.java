@@ -8,17 +8,21 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import ru.ct.belfort.kafka.KafkaConfig;
 
 import java.util.Map;
+
+import static ru.ct.belfort.kafka.KafkaConfig.KAFKA_BOOTSTRAP_ADDRESS;
 
 @EnableKafka
 @Configuration
 public class ConsumerConfig {
 
+    private static final String groupId = "trading_bot_consumers";
+
     @Bean
     public ConsumerFactory<String, String> consumerFactory(
-            @Value(value = "localhost:29092") String bootstrapAddress,
-            @Value(value = "trading_bot_consumers") String groupId
+            @Value(value = KAFKA_BOOTSTRAP_ADDRESS) String bootstrapAddress
     ) {
         return new DefaultKafkaConsumerFactory<>(Map.of(
                 org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
@@ -34,7 +38,7 @@ public class ConsumerConfig {
 
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory("localhost:29092", "trading_bot_consumers"));
+        factory.setConsumerFactory(consumerFactory(KafkaConfig.KAFKA_BOOTSTRAP_ADDRESS));
         return factory;
     }
 }

@@ -10,12 +10,14 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.Map;
 
+import static ru.ct.belfort.kafka.KafkaConfig.KAFKA_BOOTSTRAP_ADDRESS;
+
 @Configuration
 public class ProducerConfig {
 
     @Bean
     public ProducerFactory<String, String> producerFactory(
-            @Value(value = "localhost:29092") String bootstrapAddress
+            @Value(value = KAFKA_BOOTSTRAP_ADDRESS) String bootstrapAddress
     ) {
         return new DefaultKafkaProducerFactory<>(Map.of(
                 org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
@@ -26,6 +28,6 @@ public class ProducerConfig {
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory("localhost:29092"));
+        return new KafkaTemplate<>(producerFactory(KAFKA_BOOTSTRAP_ADDRESS));
     }
 }
