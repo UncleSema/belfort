@@ -1,5 +1,7 @@
 package ru.ct.belfort.producer;
 
-public class CandlesProducer {
+import org.springframework.stereotype.Service;
 
+@Service
+public class CandlesProducer {
 }
