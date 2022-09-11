@@ -2,7 +2,6 @@ package ru.ct.belfort.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -15,9 +14,7 @@ import java.util.Map;
 @Configuration
 public class UsersConsumerConfig {
 
-    @Value(value = "localhost:29092")
-    private String bootstrapAddress;
-
+    private static final String bootstrapAddress = "localhost:29092";
     private static final String groupId = "tinkoff_service_consumers";
 
     @Bean
