@@ -23,10 +23,11 @@ subprojects {
 
     dependencyManagement {
         dependencies {
+            dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+            dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
             dependency "org.springframework.boot:spring-boot-starter:$springBootVersion"
             dependency "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-            dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-            dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+            dependency "org.springframework.kafka:spring-kafka:$springKafkaVersion"
         }
     }
 }
