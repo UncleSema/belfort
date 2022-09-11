@@ -9,7 +9,7 @@ import ru.ct.belfort.UserDTO;
 public class UsersConsumer {
     @KafkaListener(topics = "ct.belfort.telegram.users",
             groupId = "tinkoff_service_consumers",
-            containerFactory = "UsersConsumer")
+            containerFactory = "UsersConsumerContainerFactory")
     public void consume(ConsumerRecord<String, UserDTO> record) {
         System.out.println("Read record!");
         System.out.println("key=" + record.key());

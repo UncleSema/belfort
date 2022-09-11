@@ -28,7 +28,7 @@ public class UsersConsumerConfig {
         ));
     }
 
-    @Bean(name = "UsersConsumer")
+    @Bean(name = "UsersConsumerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, UserDTO>
     kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, UserDTO> factory =
