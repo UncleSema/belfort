@@ -15,7 +15,7 @@ import java.util.Map;
 @Configuration
 public class UsersConsumerConfig {
 
-    @Value(value = "localhost:9092")
+    @Value(value = "localhost:29092")
     private String bootstrapAddress;
 
     private static final String groupId = "tinkoff_service_consumers";
