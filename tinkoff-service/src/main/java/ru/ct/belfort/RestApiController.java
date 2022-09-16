@@ -24,9 +24,9 @@ public class RestApiController {
     @GetMapping("/tinkoff-api-test")
     public String tinkoff() {
         producer.sendMessage(new UserDTO(1,
-                "put-your-token-here",
+                "t.ejIikFatmnI7NlPpuKdhTLgYbMtyo0XvNZqblOLR_LjiiJRnXdMvr0VSDVnerZcMlhBUxC_-Lfn7dRIhQEkv8Q",
                 "someStrategy",
-                List.of("put-your-figis-here")));
+                List.of("BBG004730ZJ9")));
         return "Tinkoff api is working!";
     }
 }

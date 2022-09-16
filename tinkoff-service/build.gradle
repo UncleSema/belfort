@@ -7,6 +7,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'ru.tinkoff.piapi:java-sdk-core'
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.slf4j:slf4j-simple'
     implementation(project(":api"))
 }
 

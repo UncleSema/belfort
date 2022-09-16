@@ -1,5 +1,7 @@
 package ru.ct.belfort;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.producer.CandlesProducer;
@@ -13,16 +15,17 @@ import java.util.function.Consumer;
 @Service
 public class CandleSubscriptionService {
 
-    private static CandlesProducer candlesProducer;
-    private static Map<String, InvestApi> api;
+    private final CandlesProducer candlesProducer;
+    private final Map<String, InvestApi> api;
+    private final Logger log = LoggerFactory.getLogger(CandleSubscriptionService.class);
 
     @Autowired
     public CandleSubscriptionService(CandlesProducer candlesProducer) {
-        CandleSubscriptionService.candlesProducer = candlesProducer;
+        this.candlesProducer = candlesProducer;
         api = new HashMap<>();
     }
 
-    private static InvestApi getApiByToken(String token) {
+    private InvestApi getApiByToken(String token) {
         if (api.containsKey(token)) {
             return api.get(token);
         } else {
@@ -32,7 +35,8 @@ public class CandleSubscriptionService {
         }
     }
 
-    public static void subscribe(String token, List<String> figis) {
+    public void subscribe(String token, List<String> figis) {
+        log.info("New subscribe");
         CandleSubscriber subs = new CandleSubscriber();
         subs.setProducer(candlesProducer);
         Consumer<Throwable> onErrorCallback = error -> System.err.println(error.toString());
@@ -42,7 +46,8 @@ public class CandleSubscriptionService {
         subsService.subscribeCandles(figis);
     }
 
-    public static void unsubscribe(String token, List<String> figis) {
+    public void unsubscribe(String token, List<String> figis) {
+        log.info("unsubscribe");
         //TODO: if stream has no figis, should I delete InvestAPI from map?
         var currentApi = getApiByToken(token);
         var subsService = currentApi.

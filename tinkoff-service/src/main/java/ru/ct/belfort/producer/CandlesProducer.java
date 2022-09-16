@@ -1,5 +1,7 @@
 package ru.ct.belfort.producer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -12,7 +14,7 @@ import ru.tinkoff.piapi.contract.v1.Candle;
 @Service
 public class CandlesProducer {
     private final KafkaTemplate<String, Candle> candlesProducer;
-
+    private static final Logger log = LoggerFactory.getLogger(CandlesProducer.class);
     @Autowired
     public CandlesProducer(@Qualifier("CandlesProducerTemplate") KafkaTemplate<String, Candle> candlesProducer) {
         this.candlesProducer = candlesProducer;
@@ -25,13 +27,11 @@ public class CandlesProducer {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult<String, Candle> result) {
-                System.out.println("Sent message=[" + message +
-                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                log.info("Sent message=[{}] with offset=[{}]", message, result.getRecordMetadata().offset());
             }
             @Override
             public void onFailure(Throwable ex) {
-                System.out.println("Unable to send message=["
-                        + message + "] due to : " + ex.getMessage());
+                log.error("Unable to send message=[{}] due to : {}", message, ex.getMessage());
             }
         });
     }
