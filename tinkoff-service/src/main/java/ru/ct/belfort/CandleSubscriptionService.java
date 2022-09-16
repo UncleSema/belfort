@@ -17,7 +17,7 @@ public class CandleSubscriptionService {
 
     private final CandlesProducer candlesProducer;
     private final Map<String, InvestApi> api;
-    private final Logger log = LoggerFactory.getLogger(CandleSubscriptionService.class);
+    private static final Logger log = LoggerFactory.getLogger(CandleSubscriptionService.class);
 
     @Autowired
     public CandleSubscriptionService(CandlesProducer candlesProducer) {
