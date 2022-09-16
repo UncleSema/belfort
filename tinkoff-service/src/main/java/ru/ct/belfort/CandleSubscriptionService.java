@@ -37,8 +37,7 @@ public class CandleSubscriptionService {
 
     public void subscribe(String token, List<String> figis) {
         log.info("New subscribe");
-        CandleSubscriber subs = new CandleSubscriber();
-        subs.setProducer(candlesProducer);
+        CandleSubscriber subs = new CandleSubscriber(candlesProducer);
         Consumer<Throwable> onErrorCallback = error -> System.err.println(error.toString());
         var currentApi = getApiByToken(token);
         var subsService =

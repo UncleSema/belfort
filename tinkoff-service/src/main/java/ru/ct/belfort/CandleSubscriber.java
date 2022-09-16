@@ -10,6 +10,10 @@ public class CandleSubscriber implements StreamProcessor<MarketDataResponse> {
     private static final Logger log = LoggerFactory.getLogger(CandleSubscriber.class);
     private CandlesProducer producer;
 
+    public CandleSubscriber(CandlesProducer producer) {
+        this.producer = producer;
+    }
+
     @Override
     public void process(MarketDataResponse response) {
         if (response.hasCandle()) {
@@ -22,9 +26,5 @@ public class CandleSubscriber implements StreamProcessor<MarketDataResponse> {
 
             //producer.sendMessage(response.getCandle());
         }
-    }
-
-    public void setProducer(CandlesProducer producer) {
-        this.producer = producer;
     }
 }
