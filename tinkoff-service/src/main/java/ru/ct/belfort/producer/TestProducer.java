@@ -7,24 +7,24 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import ru.tinkoff.piapi.contract.v1.Candle;
+import ru.ct.belfort.UserDTO;
 
 @Service
-public class CandlesProducer {
-    private final KafkaTemplate<String, Candle> candlesProducer;
+public class TestProducer {
+    private final KafkaTemplate<String, UserDTO> testProducer;
 
     @Autowired
-    public CandlesProducer(@Qualifier("CandlesProducerTemplate") KafkaTemplate<String, Candle> candlesProducer) {
-        this.candlesProducer = candlesProducer;
+    public TestProducer(@Qualifier("TestProducerTemplate") KafkaTemplate<String, UserDTO> candlesProducer) {
+        this.testProducer = candlesProducer;
     }
 
-    public void sendMessage(Candle message) {
-        ListenableFuture<SendResult<String, Candle>> future =
-                candlesProducer.send("ct.belfort.invest.candles", message);
+    public void sendMessage(UserDTO message) {
+        ListenableFuture<SendResult<String, UserDTO>> future =
+                testProducer.send("ct.belfort.telegram.users", message);
 
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
-            public void onSuccess(SendResult<String, Candle> result) {
+            public void onSuccess(SendResult<String, UserDTO> result) {
                 System.out.println("Sent message=[" + message +
                         "] with offset=[" + result.getRecordMetadata().offset() + "]");
             }

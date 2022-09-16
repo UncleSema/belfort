@@ -10,18 +10,16 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import ru.ct.belfort.UserDTO;
 import java.util.Map;
+import static ru.ct.belfort.KafkaConfig.bootstrapAddress;
+import static ru.ct.belfort.KafkaConfig.consumersGroupId;
 
 @Configuration
 public class UsersConsumerConfig {
-
-    private static final String bootstrapAddress = "localhost:29092";
-    private static final String groupId = "tinkoff_service_consumers";
-
     @Bean
     public ConsumerFactory<String, UserDTO> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
-                ConsumerConfig.GROUP_ID_CONFIG, groupId,
+                ConsumerConfig.GROUP_ID_CONFIG, consumersGroupId,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
                 JsonDeserializer.TRUSTED_PACKAGES, "*"

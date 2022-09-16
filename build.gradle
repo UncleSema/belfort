@@ -28,6 +28,7 @@ subprojects {
             dependency "org.springframework.boot:spring-boot-starter:$springBootVersion"
             dependency "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
             dependency "org.springframework.kafka:spring-kafka:$springKafkaVersion"
+            dependency "ru.tinkoff.piapi:java-sdk-core:$tinkoffApiVersion"
         }
     }
 }
