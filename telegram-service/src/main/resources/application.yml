@@ -1,0 +1,4 @@
+kafka:
+  bootstrapAddress: "localhost:29092"
+  topicName: "ct.belfort.telegram.users"
+  groupID: "telegram-service-consumers"
