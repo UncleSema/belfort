@@ -38,8 +38,8 @@ public class RsiStrategy implements Strategy {
         var avgGain = totalGain / gainCount;
         var avgLoss = totalLoss / lossCount;
 
-        System.out.println(totalGain + " " + gainCount + " " + totalLoss + " " + lossCount);
-        System.out.println(avgGain + " " + avgLoss);
+        // System.out.println(totalGain + " " + gainCount + " " + totalLoss + " " + lossCount);
+        // System.out.println(avgGain + " " + avgLoss);
 
         if (avgLoss < EPS) {
             return 100;

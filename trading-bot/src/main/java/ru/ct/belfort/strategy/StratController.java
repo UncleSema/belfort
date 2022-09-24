@@ -21,6 +21,6 @@ public class StratController {
             default -> throw new RuntimeException("Unknown strategy!"); // TODO: provide error to tinkoff-service?
         };
         IdeaDTO idea = new IdeaDTO(result, "Some meta info");
-        ideasProducer.sendMessage(idea.coefficient() + " " + idea.metainfo());
+        ideasProducer.sendMessage(idea);
     }
 }

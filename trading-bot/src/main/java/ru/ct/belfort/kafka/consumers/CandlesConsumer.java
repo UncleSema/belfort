@@ -16,8 +16,7 @@ public class CandlesConsumer {
 
     @KafkaListener(topics = "ct.belfort.invest.candles", groupId = "trading_bot_consumers")
     public void listen(TradingInfoDTO message) {
-        System.out.println("Received message: " + message);
-
+        // System.out.println("Received message: " + message);
         stratController.dispense(message);
     }
 
