@@ -5,22 +5,21 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
+import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.bind.annotation.RestController;
 
 import ru.ct.belfort.UserDTO;
 
-@RestController
+@Service
 public class UsersProducer {
-
-    @Value(value = "${kafka.producerTopic}")
-    private String topicName;
-    @Qualifier("UserKafkaTemplate")
+    @Qualifier("userKafkaTemplate")
     @Autowired
     private KafkaTemplate<String, UserDTO> kafkaTemplate;
 
-    public void sendMessage(UserDTO message) {
+    public void sendMessage(
+            @Value(value = "${kafka.producerTopic}") String topicName,
+            UserDTO message) {
 
         ListenableFuture<SendResult<String, UserDTO>> future =
                 kafkaTemplate.send(topicName, message);

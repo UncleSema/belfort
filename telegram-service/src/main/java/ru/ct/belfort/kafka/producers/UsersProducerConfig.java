@@ -1,6 +1,7 @@
 package ru.ct.belfort.kafka.producers;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -14,19 +15,15 @@ import java.util.Map;
 
 @Configuration
 public class UsersProducerConfig {
-    @Value(value = "${kafka.bootstrapAddress}")
-    private String bootstrapAddress;
     @Bean
-    public ProducerFactory<String, UserDTO> UserProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(Map.of(
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
-                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class
-        ));
+    public ProducerFactory<String, UserDTO> userProducerFactory(
+            @Value(value = "${kafka.bootstrapAddress}") String bootstrapAddress) {
+        return new DefaultKafkaProducerFactory<>(Map.of(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress, ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class, ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class));
     }
 
     @Bean
-    public KafkaTemplate<String, UserDTO> UserKafkaTemplate() {
-        return new KafkaTemplate<>(UserProducerFactory());
+    public KafkaTemplate<String, UserDTO> userKafkaTemplate(
+            @Qualifier("userProducerFactory") ProducerFactory<String, UserDTO> userProdFactory) {
+        return new KafkaTemplate<>(userProdFactory);
     }
 }

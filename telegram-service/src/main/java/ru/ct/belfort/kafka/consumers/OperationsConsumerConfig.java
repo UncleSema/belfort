@@ -8,21 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.Map;
 
 @Configuration
 public class OperationsConsumerConfig {
 
-    @Value(value = "${kafka.bootstrapAddress}")
-    private  String bootstrapAddress;
-
-    @Value(value = "${kafka.groupID}")
-    private  String groupId;
-
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, String> consumerFactory(
+            @Value(value = "${kafka.bootstrapAddress}") String bootstrapAddress,
+            @Value(value = "${kafka.groupID}") String groupId
+    ) {
         return new DefaultKafkaConsumerFactory<>(Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
                 ConsumerConfig.GROUP_ID_CONFIG, groupId,
@@ -33,11 +29,11 @@ public class OperationsConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String>
-    kafkaListenerContainerFactory() {
+    kafkaListenerContainerFactory(ConsumerFactory<String, String> consFactory) {
 
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consFactory);
         return factory;
     }
 }
