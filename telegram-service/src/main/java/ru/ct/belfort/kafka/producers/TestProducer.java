@@ -11,7 +11,7 @@ public class TestProducer {
     private final KafkaTemplate<String, UserDTO> testProducer;
 
     @Autowired
-    public TestProducer(@Qualifier("TestProducerKafkaTemplate") KafkaTemplate<String, UserDTO> candlesProducer) {
+    public TestProducer(@Qualifier("testProducerKafkaTemplate") KafkaTemplate<String, UserDTO> candlesProducer) {
         this.testProducer = candlesProducer;
     }
 

@@ -13,13 +13,19 @@ import ru.ct.belfort.UserDTO;
 
 @Service
 public class UsersProducer {
-    @Qualifier("userKafkaTemplate")
-    @Autowired
-    private KafkaTemplate<String, UserDTO> kafkaTemplate;
 
-    public void sendMessage(
-            @Value(value = "${kafka.producerTopic}") String topicName,
-            UserDTO message) {
+    @Value(value = "${kafka.producerTopic}")
+    String topicName;
+
+    private final KafkaTemplate<String, UserDTO> kafkaTemplate;
+
+
+    @Autowired
+    public UsersProducer(@Qualifier("userKafkaTemplate") KafkaTemplate<String, UserDTO> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public void sendMessage(UserDTO message) {
 
         ListenableFuture<SendResult<String, UserDTO>> future =
                 kafkaTemplate.send(topicName, message);
