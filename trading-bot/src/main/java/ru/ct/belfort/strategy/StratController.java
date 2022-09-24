@@ -16,10 +16,11 @@ public class StratController {
 
     public void dispense(TradingInfoDTO dto) {
         double result = switch (dto.strategy()) {
-            case "test" -> TestStrategy.predict(dto);
-            default -> throw new RuntimeException("Unknown strategy!"); // TODO: provide error to tinkoff-service
+            case "test" -> TestStrategy.predict();
+            case "rsi" -> RsiStrategy.predict(dto.candles());
+            default -> throw new RuntimeException("Unknown strategy!"); // TODO: provide error to tinkoff-service?
         };
-        IdeaDTO idea = new IdeaDTO(result, "Maybe it will contain some information");
+        IdeaDTO idea = new IdeaDTO(result, "Some meta info");
         ideasProducer.sendMessage(idea.coefficient() + " " + idea.metainfo());
     }
 }
