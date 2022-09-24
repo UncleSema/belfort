@@ -1,4 +1,4 @@
-package ru.ct.belfort.Kafka.Consumers;
+package ru.ct.belfort.kafka.consumers;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -27,7 +27,7 @@ public class OperationsConsumerConfig {
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
                 ConsumerConfig.GROUP_ID_CONFIG, groupId,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class
         ));
     }
 
