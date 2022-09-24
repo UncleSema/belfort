@@ -1,12 +1,9 @@
 package ru.ct.belfort.strategy;
 
-import ru.ct.belfort.TradingInfoDTO;
+import ru.ct.belfort.CandleDTO;
+
+import java.util.List;
 
 public interface Strategy {
-
-    // This method mustn't be called
-    @Deprecated
-    static double predict(TradingInfoDTO info) {
-        return -1;
-    }
+    double predict(List<CandleDTO> info);
 }

@@ -1,16 +1,18 @@
 package ru.ct.belfort.strategy;
 
+import org.springframework.stereotype.Component;
 import ru.ct.belfort.CandleDTO;
 
 import java.util.List;
 
-// Stolen from https://github.com/hondasmx/rsi_strategy
+// Idea stolen from https://github.com/hondasmx/rsi_strategy
 
+@Component
 public class RsiStrategy implements Strategy {
 
     private static final double EPS = 1e-6;
 
-    public static double predict(List<CandleDTO> candles) {
+    public double predict(List<CandleDTO> candles) {
         var totalGain = 0.0;
         var totalLoss = 0.0;
         var gainCount = 0;
@@ -37,9 +39,6 @@ public class RsiStrategy implements Strategy {
 
         var avgGain = totalGain / gainCount;
         var avgLoss = totalLoss / lossCount;
-
-        // System.out.println(totalGain + " " + gainCount + " " + totalLoss + " " + lossCount);
-        // System.out.println(avgGain + " " + avgLoss);
 
         if (avgLoss < EPS) {
             return 100;

@@ -1,6 +1,5 @@
 package ru.ct.belfort.kafka.producers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ public class IdeasProducer {
 
     private final KafkaTemplate<String, IdeaDTO> kafkaTemplate;
 
-    @Autowired
     public IdeasProducer(KafkaTemplate<String, IdeaDTO> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
