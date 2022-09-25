@@ -25,6 +25,8 @@ subprojects {
         dependencies {
             dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
             dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+            dependency "org.projectlombok:lombok:$lombokVersion"
+            dependency "org.slf4j:slf4j-api:$slf4jVersion"
             dependency "org.springframework.boot:spring-boot-starter:$springBootVersion"
             dependency "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
             dependency "org.springframework.kafka:spring-kafka:$springKafkaVersion"

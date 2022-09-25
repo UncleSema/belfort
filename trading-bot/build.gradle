@@ -3,9 +3,18 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":api"))
+
+    implementation 'org.slf4j:slf4j-api'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "org.springframework.kafka:spring-kafka"
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
 test {
