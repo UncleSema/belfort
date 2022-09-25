@@ -2,12 +2,15 @@ package ru.ct.belfort;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import ru.ct.belfort.kafka.producers.TestProducer;
 
 import java.util.List;
 
+
 @RestController
 public class RestApiController {
+
 
     private final TestProducer producer;
 
@@ -15,10 +18,12 @@ public class RestApiController {
         this.producer = producer;
     }
 
+
     @GetMapping("/telegram-service")
     public String service() {
         return "Telegram service is added!";
     }
+
 
     @GetMapping("/telegram-service-test")
     public String telegram() {
@@ -28,6 +33,5 @@ public class RestApiController {
                 List.of("1")));
         return "Telegram service is working!";
     }
-
 
 }
