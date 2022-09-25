@@ -1,32 +1,28 @@
 package ru.ct.belfort.kafka.producers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-
+import ru.ct.belfort.IdeaDTO;
 
 @Service
+@RequiredArgsConstructor
 public class IdeasProducer {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, IdeaDTO> kafkaTemplate;
 
-    @Autowired
-    public IdeasProducer(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
+    public void sendMessage(IdeaDTO message) {
 
-    public void sendMessage(String message) {
-
-        ListenableFuture<SendResult<String, String>> future =
+        ListenableFuture<SendResult<String, IdeaDTO>> future =
                 kafkaTemplate.send("ct.belfort.trade.ideas", message);
 
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+        future.addCallback(new ListenableFutureCallback<>() {
 
             @Override
-            public void onSuccess(SendResult<String, String> result) {
+            public void onSuccess(SendResult<String, IdeaDTO> result) {
                 System.out.println("Sent message=[" + message +
                         "] with offset=[" + result.getRecordMetadata().offset() + "]");
             }
