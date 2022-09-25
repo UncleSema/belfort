@@ -12,7 +12,7 @@ import java.util.Random;
 class RsiStrategyTest {
 
     private final static Random random = new Random();
-    private final static AllStrategies.RsiStrategy strategy = new AllStrategies.RsiStrategy();
+    private final static RsiStrategy strategy = new RsiStrategy();
 
     private static List<CandleDTO> closePricesToCandles(double[] closePrices) {
         var min = Arrays.stream(closePrices).min().getAsDouble();

@@ -8,23 +8,24 @@ import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.TradingInfoDTO;
 import ru.ct.belfort.kafka.producers.IdeasProducer;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StrategyService {
 
     IdeasProducer ideasProducer;
-    AllStrategies strats;
+    List<StrategyInterface> strats;
 
     public void dispense(TradingInfoDTO dto) {
-        double result;
-        if (dto.strategy().equals(strats.test.getQualifier())) {
-            result = strats.test.predict(dto.candles());
-        } else if (dto.strategy().equals(strats.rsi.getQualifier())) {
-            result = strats.rsi.predict(dto.candles());
-        } else {
-            // TODO: provide error to tinkoff-service?
-            throw new RuntimeException("Unknown strategy!");
+        double result = -1;
+        System.out.println(strats.size());
+        for (StrategyInterface strat : strats) {
+            if (dto.strategy().equals(strat.getQualifier())) {
+                result = strat.predict(dto.candles());
+                break;
+            }
         }
 
         IdeaDTO idea = new IdeaDTO(result, "Some meta info");
