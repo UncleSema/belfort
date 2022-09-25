@@ -9,24 +9,24 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import ru.tinkoff.piapi.contract.v1.Candle;
+import ru.ct.belfort.CandleDTO;
 
 @Service
 public class CandlesProducer {
-    private final KafkaTemplate<String, Candle> candlesProducer;
+    private final KafkaTemplate<String, CandleDTO> candlesProducer;
     private static final Logger log = LoggerFactory.getLogger(CandlesProducer.class);
     @Autowired
-    public CandlesProducer(@Qualifier("CandlesProducerTemplate") KafkaTemplate<String, Candle> candlesProducer) {
+    public CandlesProducer(@Qualifier("CandlesProducerTemplate") KafkaTemplate<String, CandleDTO> candlesProducer) {
         this.candlesProducer = candlesProducer;
     }
 
-    public void sendMessage(Candle message) {
-        ListenableFuture<SendResult<String, Candle>> future =
+    public void sendMessage(CandleDTO message) {
+        ListenableFuture<SendResult<String, CandleDTO>> future =
                 candlesProducer.send("ct.belfort.invest.candles", message);
 
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
-            public void onSuccess(SendResult<String, Candle> result) {
+            public void onSuccess(SendResult<String, CandleDTO> result) {
                 log.info("Sent message=[{}] with offset=[{}]", message, result.getRecordMetadata().offset());
             }
             @Override
