@@ -12,7 +12,7 @@ import java.util.Random;
 class RsiStrategyTest {
 
     private final static Random random = new Random();
-    private final static RsiStrategy strategy = new RsiStrategy();
+    private final static AllStrategies.RsiStrategy strategy = new AllStrategies.RsiStrategy();
 
     private static List<CandleDTO> closePricesToCandles(double[] closePrices) {
         var min = Arrays.stream(closePrices).min().getAsDouble();
@@ -69,7 +69,6 @@ class RsiStrategyTest {
                 .toArray();
 
         for (int i = 0; i < testcases.size() - 1; i++) {
-            System.out.println(results[i] + " " + results[i + 1]);
             Assertions.assertTrue(results[i + 1] - results[i] > -1e6);
         }
     }

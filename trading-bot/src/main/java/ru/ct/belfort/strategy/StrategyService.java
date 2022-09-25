@@ -11,16 +11,16 @@ import ru.ct.belfort.kafka.producers.IdeasProducer;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class StrategyController {
+public class StrategyService {
 
     IdeasProducer ideasProducer;
-    TestStrategy testStrategy;
-    RsiStrategy rsiStrategy;
+    AllStrategies allStrategies;
 
     public void dispense(TradingInfoDTO dto) {
+
         double result = switch (dto.strategy()) {
-            case "test" -> testStrategy.predict(dto.candles());
-            case "rsi" -> rsiStrategy.predict(dto.candles());
+            case "test" -> allStrategies.testStrategy.predict(dto.candles());
+            case "rsi" -> allStrategies.rsiStrategy.predict(dto.candles());
             default -> throw new RuntimeException("Unknown strategy!"); // TODO: provide error to tinkoff-service?
         };
 
