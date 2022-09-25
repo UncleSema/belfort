@@ -8,9 +8,10 @@ import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.TradingInfoDTO;
 import ru.ct.belfort.kafka.producers.IdeasProducer;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -22,10 +23,11 @@ public class StrategyService {
     @Autowired
     public StrategyService(IdeasProducer ideasProducer, List<StrategyInterface> stratsList) {
         this.ideasProducer = ideasProducer;
-        this.strats = new HashMap<>();
-        for (StrategyInterface strat : stratsList) {
-            strats.put(strat.getQualifier(), strat);
-        }
+        strats = stratsList
+                .stream()
+                .collect(Collectors.toMap(
+                        StrategyInterface::getQualifier,
+                        Function.identity()));
     }
 
     public void dispense(TradingInfoDTO dto) {
