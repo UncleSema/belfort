@@ -9,14 +9,14 @@ import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
+public final class AllStrategies {
 
-public class AllStrategies {
-
-    public final TestStrategy testStrategy;
-    public final RsiStrategy rsiStrategy;
+    public final TestStrategy test;
+    public final RsiStrategy rsi;
 
     public interface Strategy {
         double predict(List<CandleDTO> info);
+        String getQualifier();
     }
 
     @Component
@@ -25,6 +25,11 @@ public class AllStrategies {
         public double predict(List<CandleDTO> info) {
             Random random = new Random();
             return random.nextDouble() * 100;
+        }
+
+        @Override
+        public String getQualifier() {
+            return "test";
         }
     }
 
@@ -67,6 +72,11 @@ public class AllStrategies {
 
             var rs = avgGain / avgLoss;
             return 100 - 100 / (1 + rs);
+        }
+
+        @Override
+        public String getQualifier() {
+            return "rsi";
         }
     }
 }

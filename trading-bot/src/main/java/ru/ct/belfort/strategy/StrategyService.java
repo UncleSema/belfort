@@ -14,15 +14,18 @@ import ru.ct.belfort.kafka.producers.IdeasProducer;
 public class StrategyService {
 
     IdeasProducer ideasProducer;
-    AllStrategies allStrategies;
+    AllStrategies strats;
 
     public void dispense(TradingInfoDTO dto) {
-
-        double result = switch (dto.strategy()) {
-            case "test" -> allStrategies.testStrategy.predict(dto.candles());
-            case "rsi" -> allStrategies.rsiStrategy.predict(dto.candles());
-            default -> throw new RuntimeException("Unknown strategy!"); // TODO: provide error to tinkoff-service?
-        };
+        double result;
+        if (dto.strategy().equals(strats.test.getQualifier())) {
+            result = strats.test.predict(dto.candles());
+        } else if (dto.strategy().equals(strats.rsi.getQualifier())) {
+            result = strats.rsi.predict(dto.candles());
+        } else {
+            // TODO: provide error to tinkoff-service?
+            throw new RuntimeException("Unknown strategy!");
+        }
 
         IdeaDTO idea = new IdeaDTO(result, "Some meta info");
         ideasProducer.sendMessage(idea);
