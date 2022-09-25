@@ -1,0 +1,5 @@
+kafka:
+  bootstrapAddress: "localhost:29092"
+  producerTopic: "ct.belfort.telegram.users"
+  consumerTopic: "ct.belfort.invest.operations"
+  groupID: "telegram-service-consumers"
