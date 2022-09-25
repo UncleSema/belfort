@@ -23,6 +23,7 @@ public class RestApiController {
         return "Trading bot is working!";
     }
 
+    // Testing that Kafka works. It will be here before integration tests appear
     @GetMapping("/test-strat")
     public String testStrategy() {
         TradingInfoDTO info = new TradingInfoDTO(List.of(), "test");
@@ -30,26 +31,16 @@ public class RestApiController {
         return "Check console";
     }
 
+    // Testing that Kafka works. It will be here before integration tests appear
     @GetMapping("/rsi-strat")
     public String rsiStrategy() {
-        CandleDTO[][] samples = new CandleDTO[3][10];
-
-        // RSI uses only close price for calculations
-
-        double[] badSample = {20, 19, 23, 14, 15, 12, 10, 10, 9, 6};
-        double[] midSample = {20, 24, 23, 25, 21, 22, 22, 19, 17, 19};
         double[] goodSample = {20, 21, 25, 23, 27, 26, 28, 28, 31, 29};
-
-        for (int j = 0; j < 10; j++) {
-            samples[0][j] = new CandleDTO(0, 0, 0, badSample[j] * 100, 0);
-            samples[1][j] = new CandleDTO(0, 0, 0, midSample[j] * 100, 0);
-            samples[2][j] = new CandleDTO(0, 0, 0, goodSample[j] * 100, 0);
+        CandleDTO[] candles = new CandleDTO[goodSample.length];
+        for (int i = 0; i < goodSample.length; i++) {
+            candles[i] = new CandleDTO(0, goodSample[i] * 200, 0, goodSample[i] * 100, 0);
         }
-
-        for (int testcase = 0; testcase < 3; testcase++) {
-            TradingInfoDTO info = new TradingInfoDTO(Arrays.stream(samples[testcase]).toList(), "rsi");
-            testCandlesProducer.sendMessage(info);
-        }
+        TradingInfoDTO info = new TradingInfoDTO(Arrays.asList(candles), "rsi");
+        testCandlesProducer.sendMessage(info);
         return "Check console";
     }
 

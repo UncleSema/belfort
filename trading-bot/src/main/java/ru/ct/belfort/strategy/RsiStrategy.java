@@ -34,15 +34,16 @@ public class RsiStrategy implements Strategy {
             }
         }
 
-        gainCount = (gainCount > 0 ? gainCount : 1);
-        lossCount = (lossCount > 0 ? lossCount : 1);
+        if (gainCount == 0) {
+            return lossCount == 0 ? 50 : 0;
+        }
+        if (lossCount == 0) {
+            return 100;
+        }
 
         var avgGain = totalGain / gainCount;
         var avgLoss = totalLoss / lossCount;
 
-        if (avgLoss < EPS) {
-            return 100;
-        }
         var rs = avgGain / avgLoss;
         return 100 - 100 / (1 + rs);
     }
