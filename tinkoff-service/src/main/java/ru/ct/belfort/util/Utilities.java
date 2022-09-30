@@ -3,6 +3,8 @@ package ru.ct.belfort.util;
 import ru.ct.belfort.CandleDTO;
 import ru.tinkoff.piapi.contract.v1.Candle;
 
+import java.math.BigDecimal;
+
 public class Utilities {
     public static CandleDTO create(Candle dto) {
         return new CandleDTO(
@@ -13,9 +15,10 @@ public class Utilities {
                 dto.getVolume());
     }
 
-    public static double makeDouble(long firstPart, int secondPart) {
-        double second = secondPart;
-        while (second > 1) second /= 10.0;
-        return firstPart + second;
+    public static double makeDouble(long units, int nano) {
+        BigDecimal bigDecimal = units == 0 && nano == 0 ?
+                BigDecimal.ZERO :
+                BigDecimal.valueOf(units).add(BigDecimal.valueOf(nano, 9));
+        return bigDecimal.doubleValue();
     }
 }

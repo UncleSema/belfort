@@ -7,6 +7,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'ru.tinkoff.piapi:java-sdk-core'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.slf4j:slf4j-simple'

@@ -21,7 +21,6 @@ public class CandleSubscriptionService {
     private final CandlesProducer candlesProducer;
     private final Map<String, InvestApi> api = new HashMap<>();
 
-
     private InvestApi getApiByToken(String token) {
        return api.computeIfAbsent(token, InvestApi::create);
     }
