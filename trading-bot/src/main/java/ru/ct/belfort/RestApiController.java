@@ -35,7 +35,8 @@ public class RestApiController {
         double[] goodSample = {20, 21, 25, 23, 27, 26, 28, 28, 31, 29};
         CandleDTO[] candles = new CandleDTO[goodSample.length];
         for (int i = 0; i < goodSample.length; i++) {
-            candles[i] = new CandleDTO(0, goodSample[i] * 200, 0, goodSample[i] * 100, 0);
+            //TODO: change it
+            //candles[i] = new CandleDTO(0, goodSample[i] * 200, 0, goodSample[i] * 100, 0);
         }
         TradingInfoDTO info = new TradingInfoDTO(Arrays.asList(candles), "rsi");
         testCandlesProducer.sendMessage(info);

@@ -19,7 +19,8 @@ class RsiStrategyTest {
         var max = Arrays.stream(closePrices).max().getAsDouble();
         CandleDTO[] candles = new CandleDTO[closePrices.length];
         for (int i = 0; i < closePrices.length; i++) {
-            candles[i] = new CandleDTO(min, max, min, closePrices[i], 10);
+            //TODO: change it!
+//            candles[i] = new CandleDTO(min, max, min, closePrices[i], 10);
         }
         return Arrays.asList(candles);
     }
