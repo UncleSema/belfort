@@ -19,7 +19,6 @@ public class Utilities {
                 dto.getVolume());
     }
 
-
     public static PositionDataDTO create(PositionData dto) {
         List<MoneyValueDTO> moDTO =
                 dto.getMoneyList()

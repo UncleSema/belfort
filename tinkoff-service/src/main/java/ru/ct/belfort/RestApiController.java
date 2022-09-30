@@ -12,6 +12,7 @@ import java.util.List;
 @Slf4j
 @RestController
 public class RestApiController {
+
     @NonNull
     private final TestProducer producer;
 
