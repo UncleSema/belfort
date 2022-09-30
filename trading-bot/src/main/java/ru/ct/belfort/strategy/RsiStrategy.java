@@ -15,22 +15,21 @@ public class RsiStrategy implements StrategyInterface {
         var gainCount = 0;
         var lossCount = 0;
 
-        //TODO: change it!
-//        for (int i = 1; i < candles.size(); i++) {
-//            var candleClosePrice = candles.get(i).closePrice();
-//            var prevCandleClosePrice = candles.get(i - 1).closePrice();
-//            var diff = candleClosePrice - prevCandleClosePrice;
-//            if (Math.abs(diff) < EPS) {
-//                continue;
-//            }
-//            if (diff > 0) {
-//                totalGain += diff;
-//                gainCount++;
-//            } else {
-//                totalLoss -= diff;
-//                lossCount++;
-//            }
-//        }
+        for (int i = 1; i < candles.size(); i++) {
+            var candleClosePrice = candles.get(i).closePrice();
+            var prevCandleClosePrice = candles.get(i - 1).closePrice();
+            var diff = candleClosePrice - prevCandleClosePrice;
+            if (Math.abs(diff) < EPS) {
+                continue;
+            }
+            if (diff > 0) {
+                totalGain += diff;
+                gainCount++;
+            } else {
+                totalLoss -= diff;
+                lossCount++;
+            }
+        }
 
         if (gainCount == 0) {
             return lossCount == 0 ? 50 : 0;

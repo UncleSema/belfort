@@ -1,23 +1,20 @@
 package ru.ct.belfort.consumer;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.CandleSubscriptionService;
 import ru.ct.belfort.UserDTO;
 
-
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class UsersConsumer {
+    @NonNull
     private final CandleSubscriptionService service;
-    private static final Logger log = LoggerFactory.getLogger(UsersConsumer.class);
-    @Autowired
-    public UsersConsumer(CandleSubscriptionService service) {
-        this.service = service;
-    }
 
     @KafkaListener(topics = "ct.belfort.telegram.users",
             groupId = "tinkoff_service_consumers",

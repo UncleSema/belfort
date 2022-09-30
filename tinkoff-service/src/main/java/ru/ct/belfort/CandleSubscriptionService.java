@@ -1,7 +1,8 @@
 package ru.ct.belfort;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.producer.CandlesProducer;
 import ru.tinkoff.piapi.core.InvestApi;
@@ -12,26 +13,17 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class CandleSubscriptionService {
 
+    @NonNull
     private final CandlesProducer candlesProducer;
-    private final Map<String, InvestApi> api;
+    private final Map<String, InvestApi> api = new HashMap<>();
 
-    @Autowired
-    public CandleSubscriptionService(CandlesProducer candlesProducer) {
-        this.candlesProducer = candlesProducer;
-        api = new HashMap<>();
-    }
 
     private InvestApi getApiByToken(String token) {
-        if (api.containsKey(token)) {
-            return api.get(token);
-        } else {
-            var currentApi = InvestApi.create(token);
-            api.put(token, currentApi);
-            return currentApi;
-        }
+       return api.computeIfAbsent(token, InvestApi::create);
     }
 
     public void subscribe(String token, List<String> figis) {
