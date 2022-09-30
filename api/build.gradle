@@ -2,6 +2,10 @@ plugins {
     id 'java'
 }
 
+dependencies {
+    implementation 'ru.tinkoff.piapi:java-sdk-core'
+}
+
 test {
     useJUnitPlatform()
 }

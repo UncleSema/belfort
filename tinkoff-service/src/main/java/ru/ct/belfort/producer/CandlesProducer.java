@@ -1,7 +1,6 @@
 package ru.ct.belfort.producer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,10 +10,10 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import ru.ct.belfort.CandleDTO;
 
+@Slf4j
 @Service
 public class CandlesProducer {
     private final KafkaTemplate<String, CandleDTO> candlesProducer;
-    private static final Logger log = LoggerFactory.getLogger(CandlesProducer.class);
     @Autowired
     public CandlesProducer(@Qualifier("CandlesProducerTemplate") KafkaTemplate<String, CandleDTO> candlesProducer) {
         this.candlesProducer = candlesProducer;

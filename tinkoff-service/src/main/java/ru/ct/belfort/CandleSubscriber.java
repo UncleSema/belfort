@@ -1,14 +1,14 @@
 package ru.ct.belfort;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import ru.ct.belfort.producer.CandlesProducer;
 import ru.ct.belfort.util.Utilities;
 import ru.tinkoff.piapi.contract.v1.MarketDataResponse;
 import ru.tinkoff.piapi.core.stream.StreamProcessor;
 
+@Slf4j
 public class CandleSubscriber implements StreamProcessor<MarketDataResponse> {
-    private static final Logger log = LoggerFactory.getLogger(CandleSubscriber.class);
     private final CandlesProducer producer;
 
     public CandleSubscriber(CandlesProducer producer) {
