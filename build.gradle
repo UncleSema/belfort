@@ -23,6 +23,8 @@ subprojects {
 
     dependencyManagement {
         dependencies {
+            // AssertJ
+            dependency "org.assertj:assertj-core:$assertjVersion"
             // JUnit
             dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
             dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

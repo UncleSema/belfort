@@ -33,4 +33,9 @@ public class Utils {
 
         return closePricesToCandles(closePrices);
     }
+
+    public static TradingInfoDTO genRandomTradingInfoDTO(String strategy) {
+        var candles = genRandomCandles(10, 5, 10);
+        return new TradingInfoDTO(candles, strategy);
+    }
 }
