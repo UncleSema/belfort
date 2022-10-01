@@ -24,7 +24,7 @@ public class RestApiController {
     // Testing that Kafka works. It will be here before integration tests appear
     @GetMapping("/test-strat")
     public String testStrategy() {
-        TradingInfoDTO info = new TradingInfoDTO(List.of(), "test");
+        TradingInfoDTO info = new TradingInfoDTO(List.of(), "random");
         testCandlesProducer.sendMessage(info);
         return "Check console";
     }

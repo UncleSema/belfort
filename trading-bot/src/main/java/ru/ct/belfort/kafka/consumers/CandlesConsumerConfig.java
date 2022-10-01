@@ -20,7 +20,7 @@ public class CandlesConsumerConfig {
     private static final String groupId = "candle_consumers";
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, String> candlesConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(Map.of(
                 org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BOOTSTRAP_ADDRESS,
                 org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, groupId,
@@ -31,12 +31,10 @@ public class CandlesConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String>
-    kafkaListenerContainerFactory() {
-
+    public ConcurrentKafkaListenerContainerFactory<String, String> candlesConsumerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(candlesConsumerFactory());
         return factory;
     }
 }

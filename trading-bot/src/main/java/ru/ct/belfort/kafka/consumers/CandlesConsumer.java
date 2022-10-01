@@ -14,7 +14,9 @@ public class CandlesConsumer {
 
     private final StrategyService stratController;
 
-    @KafkaListener(topics = "ct.belfort.invest.candles", groupId = "candle_consumers")
+    @KafkaListener(topics = "ct.belfort.invest.candles",
+            groupId = "candle_consumers",
+            containerFactory = "candlesConsumerContainerFactory")
     public void listen(TradingInfoDTO message) {
         log.info("CandlesConsumer got message: " + message);
         stratController.dispense(message);

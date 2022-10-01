@@ -20,7 +20,7 @@ import static ru.ct.belfort.kafka.KafkaConfig.KAFKA_BOOTSTRAP_ADDRESS;
 public class TestCandlesProducerConfig {
 
     @Bean
-    public ProducerFactory<String, TradingInfoDTO> TestCandlesProducerFactory() {
+    public ProducerFactory<String, TradingInfoDTO> testCandlesProducerFactory() {
         return new DefaultKafkaProducerFactory<>(Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BOOTSTRAP_ADDRESS,
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
@@ -29,7 +29,7 @@ public class TestCandlesProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, TradingInfoDTO> TestCandlesProducerTemplate() {
-        return new KafkaTemplate<>(TestCandlesProducerFactory());
+    public KafkaTemplate<String, TradingInfoDTO> testCandlesProducerTemplate() {
+        return new KafkaTemplate<>(testCandlesProducerFactory());
     }
 }
