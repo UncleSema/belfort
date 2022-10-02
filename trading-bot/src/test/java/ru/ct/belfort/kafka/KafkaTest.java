@@ -77,9 +77,9 @@ public class KafkaTest {
                         return false;
                     }
                     assertThat(records)
-                            .hasSize(1)
-                            .extracting(ConsumerRecord::topic, ConsumerRecord::key, ConsumerRecord::value)
-                            .containsExactly(tuple(KafkaConfig.CANDLES_TOPIC, "testcontainers", message));
+                        .hasSize(1)
+                        .extracting(ConsumerRecord::topic, ConsumerRecord::key, ConsumerRecord::value)
+                        .containsExactly(tuple(KafkaConfig.CANDLES_TOPIC, "testcontainers", message));
                     return true;
                 }
             );

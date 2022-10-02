@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import ru.ct.belfort.IdeaDTO;
+import ru.ct.belfort.kafka.KafkaConfig;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +17,6 @@ import ru.ct.belfort.IdeaDTO;
 public class IdeasProducer {
 
     KafkaTemplate<String, IdeaDTO> kafkaTemplate;
-    KafkaTemplate<String, String> kafkaErrorTemplate;
 
     private <K, V> void addCallback(ListenableFuture<SendResult<K, V>> future, V message) {
         future.addCallback(new ListenableFutureCallback<>() {
@@ -37,14 +37,7 @@ public class IdeasProducer {
     public void sendMessage(IdeaDTO message) {
 
         ListenableFuture<SendResult<String, IdeaDTO>> future =
-                kafkaTemplate.send(IdeasProducerConfig.IDEAS_TOPIC, message);
-        addCallback(future, message);
-    }
-
-    public void sendError(String message) {
-
-        ListenableFuture<SendResult<String, String>> future =
-                kafkaErrorTemplate.send(IdeasProducerConfig.ERROR_TOPIC, message);
+                kafkaTemplate.send(KafkaConfig.IDEAS_TOPIC, message);
         addCallback(future, message);
     }
 }
