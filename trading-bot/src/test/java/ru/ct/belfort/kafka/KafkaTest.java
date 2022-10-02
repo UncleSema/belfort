@@ -40,16 +40,14 @@ public class KafkaTest {
     KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
 
     @Test
-    public void sendCandles() throws Exception {
-        JsonDeserializer<TradingInfoDTO> deserializer = new JsonDeserializer<>();
-        deserializer.addTrustedPackages("*");
+    public void sendCandles() {
+        JsonDeserializer<TradingInfoDTO> jsonDeserializer = new JsonDeserializer<>();
+        jsonDeserializer.addTrustedPackages("*");
 
         try (
             KafkaProducer<String, TradingInfoDTO> producer = new KafkaProducer<>(
                 Map.of(
-                    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
-                    ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
-                    ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
+                    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers()
                 ),
                 new StringSerializer(),
                 new JsonSerializer<>()
@@ -59,40 +57,31 @@ public class KafkaTest {
                 Map.of(
                     ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
                     ConsumerConfig.GROUP_ID_CONFIG, "candle_consumers",
-                    ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                    ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
-                    ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
-                    JsonDeserializer.TRUSTED_PACKAGES, "*"
+                    ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"
                 ),
                 new StringDeserializer(),
-                deserializer
+                jsonDeserializer
             );
         ) {
-            String topicName = "ct.belfort.invest.candles";
-
-            consumer.subscribe(Collections.singletonList(topicName));
+            consumer.subscribe(Collections.singletonList(KafkaConfig.CANDLES_TOPIC));
 
             final var message = genRandomTradingInfoDTO("rsi");
 
-            producer.send(new ProducerRecord<>(topicName, "testcontainers", message)).get();
+            producer.send(new ProducerRecord<>(KafkaConfig.CANDLES_TOPIC, "testcontainers", message));
 
             Unreliables.retryUntilTrue(
-                    10, TimeUnit.SECONDS,
-                    () -> {
-                        ConsumerRecords<String, TradingInfoDTO> records = consumer.poll(Duration.ofMillis(100));
-                        System.out.println("Hello!");
-
-                        if (records.isEmpty()) {
-                            return false;
-                        }
-
-                        assertThat(records)
-                                .hasSize(1)
-                                .extracting(ConsumerRecord::topic, ConsumerRecord::key, ConsumerRecord::value)
-                                .containsExactly(tuple(topicName, "testcontainers", message));
-
-                        return true;
+                1, TimeUnit.SECONDS,
+                () -> {
+                    ConsumerRecords<String, TradingInfoDTO> records = consumer.poll(Duration.ofMillis(100));
+                    if (records.isEmpty()) {
+                        return false;
                     }
+                    assertThat(records)
+                            .hasSize(1)
+                            .extracting(ConsumerRecord::topic, ConsumerRecord::key, ConsumerRecord::value)
+                            .containsExactly(tuple(KafkaConfig.CANDLES_TOPIC, "testcontainers", message));
+                    return true;
+                }
             );
 
             consumer.unsubscribe();

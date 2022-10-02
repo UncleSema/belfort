@@ -32,7 +32,7 @@ public class RestApiController {
     // Testing that Kafka works. It will be here before integration tests appear
     @GetMapping("/rsi-strat")
     public String rsiStrategy() {
-        double[] goodSample = {20, 21, 25, 23, 27, 26, 28, 28, 31, 29};
+        double[] goodSample = {20, 21, 25, 23, 27, 26, 28, 28, 31, 29, 39};
         CandleDTO[] candles = new CandleDTO[goodSample.length];
         for (int i = 0; i < goodSample.length; i++) {
             //TODO: change it

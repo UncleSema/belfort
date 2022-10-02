@@ -4,9 +4,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.TradingInfoDTO;
-import ru.ct.belfort.kafka.producers.IdeasProducer;
+import ru.ct.belfort.idea.SimpleIdeaGenerator;
 
 import java.util.List;
 import java.util.Map;
@@ -17,27 +16,24 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StrategyService {
 
-    IdeasProducer ideasProducer;
     Map<String, StrategyInterface> strats;
+    SimpleIdeaGenerator generator;
 
     @Autowired
-    public StrategyService(IdeasProducer ideasProducer, List<StrategyInterface> stratsList) {
-        this.ideasProducer = ideasProducer;
+    public StrategyService(List<StrategyInterface> stratsList, SimpleIdeaGenerator generator) {
         strats = stratsList
                 .stream()
                 .collect(Collectors.toMap(
                         StrategyInterface::getQualifier,
                         Function.identity()));
+        this.generator = generator;
     }
 
     public void dispense(TradingInfoDTO dto) {
-        if (!strats.containsKey(dto.strategy())) {
-            throw new RuntimeException("Unknown strategy");
-            // TODO: provide error to tinkoff-service?
+        double result = -1;
+        if (strats.containsKey(dto.strategy())) {
+            result = strats.get(dto.strategy()).predict(dto.candles());
         }
-        double result = strats.get(dto.strategy()).predict(dto.candles());
-
-        IdeaDTO idea = new IdeaDTO(result, "Some meta info");
-        ideasProducer.sendMessage(idea);
+        generator.generateIdea(result);
     }
 }

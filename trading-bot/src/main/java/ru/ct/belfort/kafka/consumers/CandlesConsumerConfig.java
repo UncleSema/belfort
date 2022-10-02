@@ -17,13 +17,13 @@ import static ru.ct.belfort.kafka.KafkaConfig.KAFKA_BOOTSTRAP_ADDRESS;
 @Configuration
 public class CandlesConsumerConfig {
 
-    private static final String groupId = "candle_consumers";
+    public static final String GROUP_ID = "candle_consumers";
 
     @Bean
     public ConsumerFactory<String, String> candlesConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(Map.of(
                 org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BOOTSTRAP_ADDRESS,
-                org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, groupId,
+                org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID,
                 org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
                 JsonDeserializer.TRUSTED_PACKAGES, "*"

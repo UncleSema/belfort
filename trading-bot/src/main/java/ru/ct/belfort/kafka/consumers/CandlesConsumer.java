@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.TradingInfoDTO;
+import ru.ct.belfort.kafka.KafkaConfig;
 import ru.ct.belfort.strategy.StrategyService;
 
 @Service
@@ -12,14 +13,13 @@ import ru.ct.belfort.strategy.StrategyService;
 @RequiredArgsConstructor
 public class CandlesConsumer {
 
-    private final StrategyService stratController;
+    private final StrategyService strategyService;
 
-    @KafkaListener(topics = "ct.belfort.invest.candles",
-            groupId = "candle_consumers",
-            containerFactory = "candlesConsumerContainerFactory")
+    @KafkaListener(topics = KafkaConfig.CANDLES_TOPIC,
+                   groupId = CandlesConsumerConfig.GROUP_ID,
+                   containerFactory = "candlesConsumerContainerFactory")
     public void listen(TradingInfoDTO message) {
         log.info("CandlesConsumer got message: " + message);
-        stratController.dispense(message);
+        strategyService.dispense(message);
     }
-
 }
