@@ -36,6 +36,7 @@ subprojects {
             // Spring Boot
             dependency "org.springframework.boot:spring-boot-starter:$springBootVersion"
             dependency "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+            dependency "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
             // Spring Kafka
             dependency "org.springframework.kafka:spring-kafka:$springKafkaVersion"
             // Testcontainers

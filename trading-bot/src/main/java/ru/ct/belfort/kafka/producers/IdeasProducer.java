@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import ru.ct.belfort.IdeaDTO;
-import ru.ct.belfort.kafka.KafkaConfig;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class IdeasProducer {
     public void sendMessage(IdeaDTO message) {
 
         ListenableFuture<SendResult<String, IdeaDTO>> future =
-                kafkaTemplate.send(KafkaConfig.IDEAS_TOPIC, message);
+                kafkaTemplate.send(IdeasProducerConfig.TOPIC, message);
         addCallback(future, message);
     }
 }

@@ -14,13 +14,17 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
 import org.rnorth.ducttape.unreliables.Unreliables;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import ru.ct.belfort.TradingInfoDTO;
+import ru.ct.belfort.kafka.consumers.CandlesConsumerConfig;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -34,10 +38,16 @@ import static ru.ct.belfort.Utils.genRandomTradingInfoDTO;
 @RequiredArgsConstructor
 @Testcontainers
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@SpringBootTest
 public class KafkaTest {
 
     @Container
-    KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
+    static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
+
+/*    @DynamicPropertySource
+    static void kafkaProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
+    }*/
 
     @Test
     public void sendCandles() {
@@ -63,11 +73,11 @@ public class KafkaTest {
                 jsonDeserializer
             );
         ) {
-            consumer.subscribe(Collections.singletonList(KafkaConfig.CANDLES_TOPIC));
+            consumer.subscribe(Collections.singletonList(CandlesConsumerConfig.TOPIC));
 
             final var message = genRandomTradingInfoDTO("rsi");
 
-            producer.send(new ProducerRecord<>(KafkaConfig.CANDLES_TOPIC, "testcontainers", message));
+            producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, "testcontainers", message));
 
             Unreliables.retryUntilTrue(
                 1, TimeUnit.SECONDS,
@@ -79,7 +89,7 @@ public class KafkaTest {
                     assertThat(records)
                         .hasSize(1)
                         .extracting(ConsumerRecord::topic, ConsumerRecord::key, ConsumerRecord::value)
-                        .containsExactly(tuple(KafkaConfig.CANDLES_TOPIC, "testcontainers", message));
+                        .containsExactly(tuple(CandlesConsumerConfig.TOPIC, "testcontainers", message));
                     return true;
                 }
             );
