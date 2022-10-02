@@ -1,5 +1,6 @@
 package ru.ct.belfort.kafka.consumers;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,10 +25,11 @@ public class CandlesConsumerConfig {
             @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers
     ) {
         return new DefaultKafkaConsumerFactory<>(Map.of(
-            org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
-            org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID,
-            org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-            org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
+            ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID,
+            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+            ConsumerConfig.CLIENT_ID_CONFIG, "CandlesConsumer",
             JsonDeserializer.TRUSTED_PACKAGES, "*"
         ));
     }

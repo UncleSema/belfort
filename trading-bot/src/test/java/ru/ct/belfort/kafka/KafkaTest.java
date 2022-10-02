@@ -13,12 +13,14 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.rnorth.ducttape.unreliables.Unreliables;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -39,12 +41,13 @@ import static ru.ct.belfort.Utils.genRandomTradingInfoDTO;
 @Testcontainers
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class KafkaTest {
 
     @Container
     static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
 
-/*    @DynamicPropertySource
+    /*@DynamicPropertySource
     static void kafkaProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
     }*/
@@ -66,7 +69,7 @@ public class KafkaTest {
             KafkaConsumer<String, TradingInfoDTO> consumer = new KafkaConsumer<>(
                 Map.of(
                     ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
-                    ConsumerConfig.GROUP_ID_CONFIG, "candle_consumers",
+                    ConsumerConfig.GROUP_ID_CONFIG, CandlesConsumerConfig.GROUP_ID,
                     ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"
                 ),
                 new StringDeserializer(),
