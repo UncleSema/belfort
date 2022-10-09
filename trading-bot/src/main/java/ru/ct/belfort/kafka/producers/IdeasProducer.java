@@ -4,10 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import ru.ct.belfort.IdeaDTO;
 
 @Service
@@ -17,26 +14,7 @@ public class IdeasProducer {
 
     KafkaTemplate<String, IdeaDTO> kafkaTemplate;
 
-    private <K, V> void addCallback(ListenableFuture<SendResult<K, V>> future, V message) {
-        future.addCallback(new ListenableFutureCallback<>() {
-
-            @Override
-            public void onSuccess(SendResult<K, V> result) {
-                System.out.println("Sent message=[" + message +
-                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
-            }
-
-            @Override
-            public void onFailure(Throwable ex) {
-                System.out.println("Unable to send message=[" + message + "] due to : " + ex.getMessage());
-            }
-        });
-    }
-
     public void sendMessage(IdeaDTO message) {
-
-        ListenableFuture<SendResult<String, IdeaDTO>> future =
-                kafkaTemplate.send(IdeasProducerConfig.TOPIC, message);
-        addCallback(future, message);
+        kafkaTemplate.send(IdeasProducerConfig.TOPIC, message);
     }
 }
