@@ -1,42 +1,45 @@
 package ru.ct.belfort.kafka;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.rnorth.ducttape.unreliables.Unreliables;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Component;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import ru.ct.belfort.IdeaDTO;
+import ru.ct.belfort.TradingInfoDTO;
+import ru.ct.belfort.kafka.consumers.CandlesConsumerConfig;
+import ru.ct.belfort.kafka.producers.IdeasProducerConfig;
 
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static ru.ct.belfort.Utils.genRandomTradingInfoDTO;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static ru.ct.belfort.Utils.closePricesToCandles;
 
 @Testcontainers
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@SpringBootTest(properties = "spring.main.lazy-initialization=true",
-        classes = {TestCandlesProducer.class, TestCandlesProducerConfig.class})
-@Component
-@ExtendWith(SpringExtension.class)
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@SpringBootTest
 public class KafkaTest {
 
     @Container
     static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
-
-    public final TestCandlesProducer producer;
-
-    // Doesn't work!
-    // public final CandlesConsumer consumer;
 
     @DynamicPropertySource
     static void kafkaProperties(DynamicPropertyRegistry registry) {
@@ -44,74 +47,69 @@ public class KafkaTest {
     }
 
     @Test
-    public void sendCandles() {
-        /*JsonDeserializer<TradingInfoDTO> jsonDeserializer = new JsonDeserializer<>();
+    public void sendCandles() throws Exception {
+
+        JsonDeserializer<IdeaDTO> jsonDeserializer = new JsonDeserializer<>();
         jsonDeserializer.addTrustedPackages("*");
 
-        try (
-            KafkaProducer<String, TradingInfoDTO> producer = new KafkaProducer<>(
+        KafkaProducer<String, TradingInfoDTO> producer = new KafkaProducer<>(
                 Map.of(
-                    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
-                    ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
-                    ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class,
-                    ProducerConfig.CLIENT_ID_CONFIG, "pseudo_candles_producer"
+                        ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
+                        ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
+                        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class,
+                        ProducerConfig.CLIENT_ID_CONFIG, "candles_test_producer"
                 ),
                 new StringSerializer(),
                 new JsonSerializer<>()
-            );
+        );
 
-            KafkaConsumer<String, TradingInfoDTO> consumer = new KafkaConsumer<>(
+        KafkaConsumer<String, IdeaDTO> consumer = new KafkaConsumer<>(
                 Map.of(
-                    ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
-                    ConsumerConfig.GROUP_ID_CONFIG, CandlesConsumerConfig.GROUP_ID,
-                    ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"
+                        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
+                        ConsumerConfig.GROUP_ID_CONFIG, "ideas_test_consumer",
+                        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"
                 ),
                 new StringDeserializer(),
                 jsonDeserializer
-            );
-        ) {
-            consumer.subscribe(Collections.singletonList(CandlesConsumerConfig.TOPIC));
+        );
 
-            final var message = genRandomTradingInfoDTO("rsi");
+        KafkaConsumer<String, String> errorConsumer = new KafkaConsumer<>(
+                Map.of(
+                        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
+                        ConsumerConfig.GROUP_ID_CONFIG, "error_test_consumer",
+                        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"
+                ),
+                new StringDeserializer(),
+                new StringDeserializer()
+        );
 
-            producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
+        // IDK why, but without waiting producer.send() doesn't do anything
+        Thread.sleep(1000);
 
-            Unreliables.retryUntilTrue(
-                10, TimeUnit.SECONDS,
-                () -> {
-                    ConsumerRecords<String, TradingInfoDTO> records = consumer.poll(Duration.ofMillis(100));
-                    if (records.isEmpty()) {
-                        return false;
-                    }
-                    assertThat(records)
-                        .hasSize(1)
-                        .extracting(ConsumerRecord::topic, ConsumerRecord::key, ConsumerRecord::value)
-                        .containsExactly(tuple(CandlesConsumerConfig.TOPIC, "testcontainers", message));
-                    return true;
-                }
-            );
+        final var message = new TradingInfoDTO(
+                closePricesToCandles(new double[]{500, 493, 491, 485, 483, 482, 480, 467, 463, 461}),
+                "rsi"
+        );
 
-            consumer.unsubscribe();
-        }*/
-
-        final var message = genRandomTradingInfoDTO("rsi");
-
-        producer.sendMessage(message);
+        consumer.subscribe(Collections.singletonList(IdeasProducerConfig.TOPIC));
+        producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
 
         Unreliables.retryUntilTrue(
-                1, TimeUnit.SECONDS,
+                5, TimeUnit.SECONDS,
                 () -> {
-                    return false;
-                    /*ConsumerRecords<String, TradingInfoDTO> records = consumer.poll(Duration.ofMillis(100));
+                    ConsumerRecords<String, IdeaDTO> records = consumer.poll(Duration.ofMillis(100));
                     if (records.isEmpty()) {
                         return false;
                     }
                     assertThat(records)
                             .hasSize(1)
-                            .extracting(ConsumerRecord::topic, ConsumerRecord::key, ConsumerRecord::value)
-                            .containsExactly(tuple(CandlesConsumerConfig.TOPIC, "testcontainers", message));
-                    return true;*/
+                            .extracting(ConsumerRecord::topic, ConsumerRecord::value)
+                            .containsExactly(tuple(IdeasProducerConfig.TOPIC, new IdeaDTO(0.0, "Recommended to buy")));
+
+                    return true;
                 }
         );
+
+        consumer.unsubscribe();
     }
 }
