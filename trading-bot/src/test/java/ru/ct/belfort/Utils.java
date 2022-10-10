@@ -9,6 +9,9 @@ public class Utils {
     private static final Random random = new Random();
 
     public static List<CandleDTO> closePricesToCandles(double[] closePrices) {
+        if (closePrices.length == 0) {
+            return List.of();
+        }
         var min = Arrays.stream(closePrices).min().getAsDouble();
         var max = Arrays.stream(closePrices).max().getAsDouble();
         CandleDTO[] candles = new CandleDTO[closePrices.length];
