@@ -29,6 +29,7 @@ public class CandlesConsumerConfig {
             ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID,
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
             ConsumerConfig.CLIENT_ID_CONFIG, "CandlesConsumer",
             JsonDeserializer.TRUSTED_PACKAGES, "*"
         ));
