@@ -3,7 +3,7 @@ package ru.ct.belfort.util;
 import ru.ct.belfort.CandleDTO;
 import ru.ct.belfort.MoneyValueDTO;
 import ru.ct.belfort.PositionDataDTO;
-import ru.ct.belfort.PositionSecuritiesDTO;
+import ru.ct.belfort.PositionsSecuritiesDTO;
 import ru.tinkoff.piapi.contract.v1.*;
 
 import java.math.BigDecimal;
@@ -25,7 +25,7 @@ public class Utilities {
                         .stream()
                         .map(s -> create(s.getAvailableValue()))
                         .toList();
-        List<PositionSecuritiesDTO> secDTO = dto.getSecuritiesList()
+        List<PositionsSecuritiesDTO> secDTO = dto.getSecuritiesList()
                 .stream()
                 .map(Utilities::create)
                 .toList();
@@ -36,8 +36,8 @@ public class Utilities {
         );
     }
 
-    public static PositionSecuritiesDTO create(PositionsSecurities dto) {
-        return new PositionSecuritiesDTO(
+    public static PositionsSecuritiesDTO create(PositionsSecurities dto) {
+        return new PositionsSecuritiesDTO(
                 dto.getFigi(),
                 dto.getPositionUid(),
                 dto.getInstrumentUid(),
@@ -53,5 +53,9 @@ public class Utilities {
                 BigDecimal.ZERO :
                 BigDecimal.valueOf(units).add(BigDecimal.valueOf(nano, 9));
         return bigDecimal.doubleValue();
+    }
+
+    public static double makeDouble(Quotation quotation) {
+        return makeDouble(quotation.getUnits(), quotation.getNano());
     }
 }
