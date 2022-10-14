@@ -71,7 +71,7 @@ public class UtilitiesTest {
                 .build();
         PositionDataDTO ourDto = Utilities.create(tinkoffData);
 
-        Assertions.assertEquals(tinkoffData.getAccountId(), ourDto.account_id());
+        Assertions.assertEquals(tinkoffData.getAccountId(), ourDto.accountId());
         Assertions.assertEquals(tinkoffData.getMoneyList().stream().map(PositionsMoney::getAvailableValue).
                         map(Utilities::create).toList(),
                 ourDto.money());
@@ -90,9 +90,9 @@ public class UtilitiesTest {
         PositionsSecuritiesDTO ourDto = Utilities.create(tinkoffSecurities);
 
         Assertions.assertEquals(tinkoffSecurities.getFigi(), ourDto.figi());
-        Assertions.assertEquals(tinkoffSecurities.getPositionUid(), ourDto.position_uid());
-        Assertions.assertEquals(tinkoffSecurities.getInstrumentUid(), ourDto.instrument_uid());
-        Assertions.assertEquals(tinkoffSecurities.getInstrumentType(), ourDto.instrument_type());
+        Assertions.assertEquals(tinkoffSecurities.getPositionUid(), ourDto.positionUid());
+        Assertions.assertEquals(tinkoffSecurities.getInstrumentUid(), ourDto.instrumentUid());
+        Assertions.assertEquals(tinkoffSecurities.getInstrumentType(), ourDto.instrumentType());
     }
 
     @Test

@@ -16,7 +16,6 @@ public class UsersConsumer {
 
     private final CandleSubscriptionService candleSubscriptionService;
     private final OperationSubscriptionService operationSubscriptionService;
-    //TODO: can I do it simpler? Maybe with some annotations?
 
     @KafkaListener(topics = "ct.belfort.telegram.users",
             groupId = "tinkoff_service_consumers",
