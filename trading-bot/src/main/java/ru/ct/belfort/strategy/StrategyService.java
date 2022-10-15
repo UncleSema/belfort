@@ -30,10 +30,11 @@ public class StrategyService {
     }
 
     public void dispense(TradingInfoDTO dto) {
-        double result = -1;
-        if (strats.containsKey(dto.strategy())) {
-            result = strats.get(dto.strategy()).predict(dto.candles());
+        try {
+            double result = strats.get(dto.strategy()).predict(dto.candles());
+            generator.generateIdea(result);
+        } catch (NullPointerException e) {
+            generator.generateError("Unknown strategy");
         }
-        generator.generateIdea(result);
     }
 }

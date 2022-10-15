@@ -1,8 +1,11 @@
 package ru.ct.belfort;
 
+import org.testcontainers.shaded.com.google.common.primitives.Doubles;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class Utils {
 
@@ -14,11 +17,9 @@ public class Utils {
         }
         var min = Arrays.stream(closePrices).min().getAsDouble();
         var max = Arrays.stream(closePrices).max().getAsDouble();
-        CandleDTO[] candles = new CandleDTO[closePrices.length];
-        for (int i = 0; i < closePrices.length; i++) {
-            candles[i] = new CandleDTO(min, max, min, closePrices[i], 10);
-        }
-        return Arrays.asList(candles);
+        var candles = Arrays.stream(closePrices)
+                .mapToObj(price -> new CandleDTO(min, max, min, price, 10));
+        return candles.toList();
     }
 
     public static List<CandleDTO> genRandomCandles(int amount, double minClosePrice, double maxClosePrice) {
@@ -27,14 +28,11 @@ public class Utils {
         assert maxClosePrice >= minClosePrice;
         assert maxClosePrice < 1e12;
 
-        double[] closePrices = new double[amount];
-        for (int i = 0; i < amount; i++) {
-            closePrices[i] = random.nextDouble() * (maxClosePrice - minClosePrice) + minClosePrice;
-            assert closePrices[i] >= minClosePrice;
-            assert closePrices[i] <= maxClosePrice;
-        }
-
-        return closePricesToCandles(closePrices);
+        var closePrices = Stream
+                .generate(() -> random.nextDouble() * (maxClosePrice - minClosePrice) + minClosePrice)
+                .limit(amount)
+                .toList();
+        return closePricesToCandles(Doubles.toArray(closePrices));
     }
 
     public static TradingInfoDTO genRandomTradingInfoDTO(String strategy) {

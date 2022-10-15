@@ -9,7 +9,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +21,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import ru.ct.belfort.IdeaDTO;
+import ru.ct.belfort.Advice;
 import ru.ct.belfort.TradingInfoDTO;
 import ru.ct.belfort.kafka.consumers.CandlesConsumerConfig;
 import ru.ct.belfort.kafka.producers.ErrorProducerConfig;
@@ -116,7 +116,7 @@ public class KafkaTest {
         );
         producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
         double coeff = new RsiStrategy().predict(message.candles());
-        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(coeff, "Recommended to buy"));
+        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(coeff, Advice.BUY));
         expectNoMessage(errorConsumer);
     }
 
@@ -128,7 +128,7 @@ public class KafkaTest {
         );
         producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
         double coeff = new RsiStrategy().predict(message.candles());
-        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(coeff, "Recommended to sell"));
+        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(coeff, Advice.SELL));
         expectNoMessage(errorConsumer);
     }
 
@@ -152,10 +152,5 @@ public class KafkaTest {
         producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
         expectMessage(errorConsumer, ErrorProducerConfig.TOPIC, "Unknown strategy");
         expectNoMessage(ideasConsumer);
-    }
-
-    @AfterAll
-    public static void destructor() {
-        ideasConsumer.unsubscribe();
     }
 }
