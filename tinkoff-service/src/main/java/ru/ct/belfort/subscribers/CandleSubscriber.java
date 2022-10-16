@@ -1,4 +1,4 @@
-package ru.ct.belfort;
+package ru.ct.belfort.subscribers;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
