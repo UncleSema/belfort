@@ -9,6 +9,7 @@ public class RsiStrategy implements StrategyInterface {
 
     private static final double EPS = 1e-6;
 
+    @Override
     public double predict(List<CandleDTO> candles) {
         var totalGain = 0.0;
         var totalLoss = 0.0;

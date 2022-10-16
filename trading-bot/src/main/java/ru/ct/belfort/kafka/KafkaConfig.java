@@ -1,5 +1,9 @@
 package ru.ct.belfort.kafka;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+@Configuration
+@PropertySource("classpath:kafka.properties")
 public class KafkaConfig {
-    public static final String KAFKA_BOOTSTRAP_ADDRESS = "localhost:29092";
 }
