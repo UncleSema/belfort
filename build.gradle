@@ -23,19 +23,32 @@ subprojects {
 
     dependencyManagement {
         dependencies {
+            // AssertJ
+            dependency "org.assertj:assertj-core:$assertjVersion"
+            // JUnit
             dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
             dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-<<<<<<< Updated upstream
+            // Lombok
             dependency "org.projectlombok:lombok:$lombokVersion"
-=======
->>>>>>> Stashed changes
+            // SLF4J
+            dependency "org.slf4j:slf4j-api:$slf4jVersion"
+            dependency "org.slf4j:slf4j-simple:$slf4jVersion"
+            // Spring Boot
             dependency "org.springframework.boot:spring-boot-starter:$springBootVersion"
             dependency "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+            dependency "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+            // Spring Kafka
             dependency "org.springframework.kafka:spring-kafka:$springKafkaVersion"
+            // Testcontainers
+            dependency "org.testcontainers:testcontainers:$testcontainersVersion"
+            dependency "org.testcontainers:kafka:$testcontainersVersion"
+            dependency "org.testcontainers:junit-jupiter:$testcontainersVersion"
+            // Tinkoff API
             dependency "ru.tinkoff.piapi:java-sdk-core:$tinkoffApiVersion"
-            dependency "org.projectlombok:lombok:$lombokVersion"
+            //Telegram API
             dependency "org.telegram:telegrambots:$telegramVersion"
             dependency "org.telegram:telegrambotsextensions:$telegramVersion"
+
 
         }
     }
