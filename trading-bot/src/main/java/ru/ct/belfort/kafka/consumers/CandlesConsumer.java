@@ -12,12 +12,13 @@ import ru.ct.belfort.strategy.StrategyService;
 @RequiredArgsConstructor
 public class CandlesConsumer {
 
-    private final StrategyService stratController;
+    private final StrategyService strategyService;
 
-    @KafkaListener(topics = "ct.belfort.invest.candles", groupId = "candle_consumers")
+    @KafkaListener(topics = CandlesConsumerConfig.TOPIC,
+                   groupId = CandlesConsumerConfig.GROUP_ID,
+                   containerFactory = "candlesConsumerContainerFactory")
     public void listen(TradingInfoDTO message) {
         log.info("CandlesConsumer got message: " + message);
-        stratController.dispense(message);
+        strategyService.dispense(message);
     }
-
 }

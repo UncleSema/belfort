@@ -8,32 +8,30 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
-import ru.ct.belfort.IdeaDTO;
 
 import java.util.Map;
 
 @Configuration
-public class IdeasProducerConfig {
+public class ErrorProducerConfig {
 
-    public static final String TOPIC = "ct.belfort.trade.ideas";
+    public static final String TOPIC = "ct.belfort.trade.error";
 
     @Bean
-    public ProducerFactory<String, IdeaDTO> ideasProducerFactory(
+    public ProducerFactory<String, String> errorProducerFactory(
             @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers
     ) {
         return new DefaultKafkaProducerFactory<>(Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class,
-                ProducerConfig.CLIENT_ID_CONFIG, "IdeasProducer"
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
+                ProducerConfig.CLIENT_ID_CONFIG, "ErrorProducer"
         ));
     }
 
     @Bean
-    public KafkaTemplate<String, IdeaDTO> kafkaTemplate(
+    public KafkaTemplate<String, String> kafkaErrorTemplate(
             @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers
     ) {
-        return new KafkaTemplate<>(ideasProducerFactory(bootstrapServers));
+        return new KafkaTemplate<>(errorProducerFactory(bootstrapServers));
     }
 }

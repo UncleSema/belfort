@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 @Strategy
-public class TestStrategy implements StrategyInterface {
+public class RandomStrategy implements StrategyInterface {
 
+    @Override
     public double predict(List<CandleDTO> info) {
         Random random = new Random();
         return random.nextDouble() * 100;
@@ -15,6 +16,6 @@ public class TestStrategy implements StrategyInterface {
 
     @Override
     public String getQualifier() {
-        return "test";
+        return "random";
     }
 }

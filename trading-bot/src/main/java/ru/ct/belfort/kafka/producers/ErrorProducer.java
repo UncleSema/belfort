@@ -5,16 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import ru.ct.belfort.IdeaDTO;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class IdeasProducer {
+public class ErrorProducer {
 
-    KafkaTemplate<String, IdeaDTO> kafkaTemplate;
+    KafkaTemplate<String, String> kafkaErrorTemplate;
 
-    public void sendMessage(IdeaDTO message) {
-        kafkaTemplate.send(IdeasProducerConfig.TOPIC, message);
+    public void sendMessage(String message) {
+        kafkaErrorTemplate.send(ErrorProducerConfig.TOPIC, message);
     }
 }
