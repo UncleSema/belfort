@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.producer.CandlesProducer;
+import ru.ct.belfort.subscribers.CandleSubscriber;
 import ru.tinkoff.piapi.core.InvestApi;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class CandleSubscriptionService {
     public void subscribe(String token, List<String> figis) {
         log.info("New subscribe");
         CandleSubscriber subs = new CandleSubscriber(candlesProducer);
-        Consumer<Throwable> onErrorCallback = error -> System.err.println(error.toString());
+        Consumer<Throwable> onErrorCallback = error -> log.error(error.toString());
         var currentApi = getApiByToken(token);
         var subsService =
                 currentApi.getMarketDataStreamService().newStream("candles_stream", subs, onErrorCallback);
