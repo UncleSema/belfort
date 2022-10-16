@@ -12,8 +12,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
 
     annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.slf4j:slf4j-api'
-    implementation 'org.slf4j:slf4j-simple'
     implementation 'org.projectlombok:lombok'
     implementation(project(":api"))
 }

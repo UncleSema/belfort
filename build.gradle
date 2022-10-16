@@ -25,14 +25,18 @@ subprojects {
         dependencies {
             dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
             dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+<<<<<<< Updated upstream
             dependency "org.projectlombok:lombok:$lombokVersion"
+=======
+>>>>>>> Stashed changes
             dependency "org.springframework.boot:spring-boot-starter:$springBootVersion"
             dependency "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
             dependency "org.springframework.kafka:spring-kafka:$springKafkaVersion"
             dependency "ru.tinkoff.piapi:java-sdk-core:$tinkoffApiVersion"
-            dependency "org.slf4j:slf4j-api:$slf4jApiVersion"
-            dependency "org.slf4j:slf4j-simple:$slf4jSimpleVersion"
             dependency "org.projectlombok:lombok:$lombokVersion"
+            dependency "org.telegram:telegrambots:$telegramVersion"
+            dependency "org.telegram:telegrambotsextensions:$telegramVersion"
+
         }
     }
 }
