@@ -23,6 +23,9 @@ subprojects {
 
     dependencyManagement {
         dependencies {
+            //Mockito
+            dependency "org.mockito:mockito-core:$mockitoVersion"
+            dependency "org.mockito:mockito-junit-jupiter:$mockitoVersion"
             // AssertJ
             dependency "org.assertj:assertj-core:$assertjVersion"
             // JUnit
