@@ -1,4 +1,4 @@
 package ru.ct.belfort;
 
-public record IdeaDTO(double coefficient, Advice advice) {
+public record IdeaDTO(double score, Advice advice) {
 }

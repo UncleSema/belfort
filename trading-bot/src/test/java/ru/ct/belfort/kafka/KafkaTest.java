@@ -115,8 +115,8 @@ public class KafkaTest {
                 "rsi"
         );
         producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
-        double coeff = new RsiStrategy().predict(message.candles());
-        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(coeff, Advice.BUY));
+        double score = new RsiStrategy().predict(message.candles());
+        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(score, Advice.BUY));
         expectNoMessage(errorConsumer);
     }
 
@@ -127,8 +127,8 @@ public class KafkaTest {
                 "rsi"
         );
         producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
-        double coeff = new RsiStrategy().predict(message.candles());
-        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(coeff, Advice.SELL));
+        double score = new RsiStrategy().predict(message.candles());
+        expectMessage(ideasConsumer, IdeasProducerConfig.TOPIC, new IdeaDTO(score, Advice.SELL));
         expectNoMessage(errorConsumer);
     }
 

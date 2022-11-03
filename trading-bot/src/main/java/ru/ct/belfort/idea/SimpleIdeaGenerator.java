@@ -18,11 +18,11 @@ public class SimpleIdeaGenerator implements IdeaGenerator {
     ErrorProducer errorProducer;
 
     @Override
-    public void generateIdea(double coefficient) {
-        if (coefficient < 30) {
-            ideasProducer.sendMessage(new IdeaDTO(coefficient, Advice.BUY));
-        } else if (coefficient > 70) {
-            ideasProducer.sendMessage(new IdeaDTO(coefficient, Advice.SELL));
+    public void generateIdea(double score) {
+        if (score < 30) {
+            ideasProducer.sendMessage(new IdeaDTO(score, Advice.BUY));
+        } else if (score > 70) {
+            ideasProducer.sendMessage(new IdeaDTO(score, Advice.SELL));
         }
     }
 
