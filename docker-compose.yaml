@@ -27,4 +27,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: trading_bot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres

@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.Advice;
+import ru.ct.belfort.db.IdeasRepository;
 import ru.ct.belfort.kafka.producers.ErrorProducer;
 import ru.ct.belfort.kafka.producers.IdeasProducer;
 
@@ -16,6 +17,7 @@ public class SimpleIdeaGenerator implements IdeaGenerator {
 
     IdeasProducer ideasProducer;
     ErrorProducer errorProducer;
+    IdeasRepository ideasRepository;
 
     @Override
     public void generateIdea(double score) {
