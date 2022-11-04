@@ -26,7 +26,7 @@ subprojects {
             // AssertJ
             dependency "org.assertj:assertj-core:$assertjVersion"
             // JDBC
-            dependency 'org.springframework:spring-jdbc:5.3.23'
+            dependency "org.springframework:spring-jdbc:$jdbcVersion"
             // JUnit
             dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
             dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

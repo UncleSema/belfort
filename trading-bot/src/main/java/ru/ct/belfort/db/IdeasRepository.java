@@ -1,5 +1,8 @@
 package ru.ct.belfort.db;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.IdeaDTO;
 
@@ -9,15 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class IdeasRepository {
-    private static Connection connection;
-    private static Statement statement;
+    private Connection connection;
+    private Statement statement;
 
-    static {
+    @Autowired
+    public IdeasRepository(Environment env) {
         try {
             connection = DriverManager
-                    .getConnection("jdbc:postgresql://localhost/trading_bot",
-                            "postgres", "postgres");
+                    .getConnection(
+                            env.getProperty("spring.datasource.url"),
+                            env.getProperty("spring.datasource.username"),
+                            env.getProperty("spring.datasource.password")
+                    );
             statement = connection.createStatement();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -34,6 +42,7 @@ public class IdeasRepository {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
+        debugOutput();
     }
 
     public List<IdeaEntity> selectAll() {
@@ -63,6 +72,13 @@ public class IdeasRepository {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void debugOutput() {
+        log.info("Inserted");
+        for (IdeaEntity it : selectAll()) {
+            log.info(it.toString());
         }
     }
 
