@@ -1,5 +1,6 @@
 package ru.ct.belfort.kafka;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -9,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +25,8 @@ import org.testcontainers.utility.DockerImageName;
 import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.Advice;
 import ru.ct.belfort.TradingInfoDTO;
+import ru.ct.belfort.db.IdeaEntity;
+import ru.ct.belfort.db.IdeasRepository;
 import ru.ct.belfort.kafka.consumers.CandlesConsumerConfig;
 import ru.ct.belfort.kafka.producers.ErrorProducerConfig;
 import ru.ct.belfort.kafka.producers.IdeasProducerConfig;
@@ -38,6 +42,7 @@ import static ru.ct.belfort.Utils.closePricesToCandles;
 
 @Testcontainers
 @SpringBootTest
+@Slf4j
 public class KafkaTest {
 
     @Container
@@ -152,5 +157,15 @@ public class KafkaTest {
         producer.send(new ProducerRecord<>(CandlesConsumerConfig.TOPIC, message));
         expectMessage(errorConsumer, ErrorProducerConfig.TOPIC, "Unknown strategy");
         expectNoMessage(ideasConsumer);
+    }
+
+    // TODO: write database tests
+    @AfterAll
+    public static void printDatabaseContent() {
+        IdeasRepository repo = new IdeasRepository();
+        for (IdeaEntity it : repo.selectAll()) {
+            log.info(it.toString());
+        }
+        repo.deleteAll();
     }
 }

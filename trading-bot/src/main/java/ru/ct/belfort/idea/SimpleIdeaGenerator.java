@@ -21,11 +21,12 @@ public class SimpleIdeaGenerator implements IdeaGenerator {
 
     @Override
     public void generateIdea(double score) {
-        if (score < 30) {
-            ideasProducer.sendMessage(new IdeaDTO(score, Advice.BUY));
-        } else if (score > 70) {
-            ideasProducer.sendMessage(new IdeaDTO(score, Advice.SELL));
+        if (score > 30 && score < 70) {
+            return;
         }
+        var idea = new IdeaDTO(score, score < 30 ? Advice.BUY : Advice.SELL);
+        ideasProducer.sendMessage(idea);
+        ideasRepository.insert(idea);
     }
 
     @Override
