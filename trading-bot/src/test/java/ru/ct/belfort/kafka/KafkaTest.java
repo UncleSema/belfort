@@ -17,11 +17,12 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
-import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.Advice;
+import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.TradingInfoDTO;
 import ru.ct.belfort.kafka.consumers.CandlesConsumerConfig;
 import ru.ct.belfort.kafka.producers.ErrorProducerConfig;
@@ -43,9 +44,16 @@ public class KafkaTest {
     @Container
     static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
 
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres");
+
     @DynamicPropertySource
     static void kafkaProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
+        registry.add("spring.datasource.drivername", postgres::getDriverClassName);
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
     }
 
     static KafkaProducer<String, TradingInfoDTO> producer = null;

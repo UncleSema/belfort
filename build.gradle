@@ -49,6 +49,7 @@ subprojects {
             dependency "org.testcontainers:testcontainers:$testcontainersVersion"
             dependency "org.testcontainers:kafka:$testcontainersVersion"
             dependency "org.testcontainers:junit-jupiter:$testcontainersVersion"
+            dependency "org.testcontainers:postgresql:$testcontainersVersion"
             // Tinkoff API
             dependency "ru.tinkoff.piapi:java-sdk-core:$tinkoffApiVersion"
         }

@@ -2,79 +2,42 @@ package ru.ct.belfort.db;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.IdeaDTO;
 
-import javax.annotation.PreDestroy;
+import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
 public class IdeasRepository {
-    private Connection connection;
-    private Statement statement;
+    private final JdbcTemplate jdbcTemplate;
+    private static final IdeaEntityMapper mapper = new IdeaEntityMapper();
 
     @Autowired
-    public IdeasRepository(Environment env) {
-        try {
-            connection = DriverManager
-                    .getConnection(
-                            env.getProperty("spring.datasource.url"),
-                            env.getProperty("spring.datasource.username"),
-                            env.getProperty("spring.datasource.password")
-                    );
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+    public IdeasRepository(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public void insert(IdeaDTO idea) {
-        final String QUERY = "INSERT INTO ideas(score, time) VALUES(?, CURRENT_TIMESTAMP(0))";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY)) {
-            preparedStatement.setDouble(1, idea.score());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+        jdbcTemplate.update("""
+            INSERT INTO ideas(score, time) VALUES(?, CURRENT_TIMESTAMP(0))
+        """, idea.score());
         debugOutput();
     }
 
     public List<IdeaEntity> selectAll() {
-        final String QUERY = "SELECT * FROM ideas";
-        List<IdeaEntity> ideas = new ArrayList<>();
-        try (ResultSet resultSet = statement.executeQuery(QUERY)) {
-            while (resultSet.next()) {
-                ideas.add(
-                        IdeaEntity.builder()
-                                .id(resultSet.getInt("id"))
-                                .score(resultSet.getDouble("score"))
-                                .time(resultSet.getTimestamp("time"))
-                                .build()
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return ideas;
+        return jdbcTemplate.query("SELECT * FROM ideas", mapper);
     }
 
     public void deleteAll() {
-        final String QUERY = "DELETE FROM ideas";
-        try {
-            statement.executeUpdate(QUERY);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+        jdbcTemplate.update("DELETE FROM ideas");
     }
 
+    // TODO: Remove this when db tests appear
     private void debugOutput() {
         log.info("Inserted");
         for (IdeaEntity it : selectAll()) {
@@ -82,13 +45,15 @@ public class IdeasRepository {
         }
     }
 
-    @PreDestroy
-    private void destructor() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+    private static class IdeaEntityMapper implements RowMapper<IdeaEntity> {
+
+        @Override
+        public IdeaEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return IdeaEntity.builder()
+                    .id(rs.getInt("id"))
+                    .score(rs.getDouble("score"))
+                    .time(rs.getTimestamp("time"))
+                    .build();
         }
     }
 }
