@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.IdeaDTO;
 import ru.ct.belfort.Advice;
+import ru.ct.belfort.db.IdeasRepository;
 import ru.ct.belfort.kafka.producers.ErrorProducer;
 import ru.ct.belfort.kafka.producers.IdeasProducer;
 
@@ -16,14 +17,16 @@ public class SimpleIdeaGenerator implements IdeaGenerator {
 
     IdeasProducer ideasProducer;
     ErrorProducer errorProducer;
+    IdeasRepository ideasRepository;
 
     @Override
-    public void generateIdea(double coefficient) {
-        if (coefficient < 30) {
-            ideasProducer.sendMessage(new IdeaDTO(coefficient, Advice.BUY));
-        } else if (coefficient > 70) {
-            ideasProducer.sendMessage(new IdeaDTO(coefficient, Advice.SELL));
+    public void generateIdea(double score) {
+        if (score > 30 && score < 70) {
+            return;
         }
+        var idea = new IdeaDTO(score, score < 30 ? Advice.BUY : Advice.SELL);
+        ideasProducer.sendMessage(idea);
+        ideasRepository.insert(idea);
     }
 
     @Override

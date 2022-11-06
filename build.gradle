@@ -25,11 +25,17 @@ subprojects {
         dependencies {
             // AssertJ
             dependency "org.assertj:assertj-core:$assertjVersion"
+            // JDBC
+            dependency "org.springframework:spring-jdbc:$jdbcVersion"
             // JUnit
             dependency "org.junit.jupiter:junit-jupiter-api:$junitVersion"
             dependency "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+            // Liquibase
+            dependency "org.liquibase:liquibase-core:$liquibaseVersion"
             // Lombok
             dependency "org.projectlombok:lombok:$lombokVersion"
+            // Postgresql
+            dependency "org.postgresql:postgresql:$postgresqlJDBCDriverVersion"
             // SLF4J
             dependency "org.slf4j:slf4j-api:$slf4jVersion"
             dependency "org.slf4j:slf4j-simple:$slf4jVersion"
@@ -43,6 +49,7 @@ subprojects {
             dependency "org.testcontainers:testcontainers:$testcontainersVersion"
             dependency "org.testcontainers:kafka:$testcontainersVersion"
             dependency "org.testcontainers:junit-jupiter:$testcontainersVersion"
+            dependency "org.testcontainers:postgresql:$testcontainersVersion"
             // Tinkoff API
             dependency "ru.tinkoff.piapi:java-sdk-core:$tinkoffApiVersion"
         }
