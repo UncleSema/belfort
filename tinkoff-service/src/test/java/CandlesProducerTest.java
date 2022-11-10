@@ -7,6 +7,11 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 import ru.ct.belfort.CandleDTO;
 import ru.ct.belfort.producer.CandlesProducer;
+import ru.ct.belfort.subscribers.CandleSubscriber;
+import ru.ct.belfort.util.Utilities;
+import ru.tinkoff.piapi.contract.v1.Candle;
+import ru.tinkoff.piapi.contract.v1.MarketDataResponse;
+import ru.tinkoff.piapi.contract.v1.Quotation;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -40,6 +45,52 @@ public class CandlesProducerTest {
         Mockito.verify(kafkaTemplate, Mockito.times(1))
                 .send("ct.belfort.invest.candles", dto3);
     }
+
+    @Test
+    void candleSubscriberTest() {
+        CandlesProducer producer = Mockito.mock(CandlesProducer.class);
+        CandleSubscriber subscriber = new CandleSubscriber(producer);
+
+        Candle tinkoffCandle = Candle.newBuilder().
+                setLow(
+                        Quotation.newBuilder().
+                                setUnits(23).
+                                setNano(32).build()
+                ).setHigh(
+                        Quotation.newBuilder().
+                                setUnits(111).
+                                setNano(1323231214).build()
+                ).setOpen(
+                        Quotation.newBuilder().
+                                setUnits(3123).
+                                setNano(121231233).build()
+                ).setClose(
+                        Quotation.newBuilder().
+                                setUnits(1231).
+                                setNano(312315).build()
+                ).setVolume(
+                        888
+                ).build();
+
+        MarketDataResponse response1 = MarketDataResponse
+                .newBuilder()
+                .setCandle(tinkoffCandle).build();
+
+        subscriber.process(response1);
+        //Checking that I'm sending candle if I got it
+        Mockito.verify(producer, Mockito.times(1))
+                .sendMessage(Utilities.create(tinkoffCandle));
+
+        MarketDataResponse response2 =
+                MarketDataResponse.newBuilder().build();
+        subscriber.process(response2);
+
+        //Checking that if I don't have any candles I don't send anything to kafka
+        Mockito.verify(producer, Mockito.times(1))
+                .sendMessage(any());
+    }
+
+
 }
 
 
