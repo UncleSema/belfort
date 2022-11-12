@@ -10,10 +10,12 @@ dependencies {
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.slf4j:slf4j-simple'
 
+
     implementation 'org.telegram:telegrambots'
 
     implementation 'org.telegram:telegrambotsextensions'
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     implementation(project(":api"))
 

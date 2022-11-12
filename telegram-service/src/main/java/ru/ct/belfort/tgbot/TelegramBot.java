@@ -1,6 +1,7 @@
 package ru.ct.belfort.tgbot;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+@Slf4j
 @Service
 public class TelegramBot extends TelegramLongPollingCommandBot {
     private final String BOT_NAME = "BelfortCT_bot";
-    private final String BOT_TOKEN = "5749489834:AAFKqXzbjBxkrG0xt5mjtqGtTXKOA2Hdqzo";
+    private final String BOT_TOKEN = System.getenv("BOT_TOKEN");
 
     private final TestProducer producer;
 
@@ -94,8 +95,8 @@ public class TelegramBot extends TelegramLongPollingCommandBot {
                     }
                     case INIT -> {
                         String[] data = message.getText().split("\\s+");
-                        if (data.length != 3) {
-                            sendMessage.setText("Please follow selected format, " + data.length + " values were entered");
+                        if (data.length < 3) {
+                            sendMessage.setText("Please follow selected format, only " + data.length + " values were entered");
                             break;
                         }
                         newInfo = new UserDTO(current.id(), data[0], data[1], Arrays.asList(Arrays.copyOfRange(data, 2, data.length)));
@@ -112,7 +113,7 @@ public class TelegramBot extends TelegramLongPollingCommandBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.error("Exception during registering bot", e);
         }
     }
 

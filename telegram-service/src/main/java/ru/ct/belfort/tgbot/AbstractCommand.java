@@ -1,10 +1,12 @@
 package ru.ct.belfort.tgbot;
 
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+@Slf4j
 abstract class AbstractCommand extends BotCommand {
 
     private final BotMapHandler mapHandler;
@@ -27,7 +29,7 @@ abstract class AbstractCommand extends BotCommand {
         try {
             absSender.execute(message);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.error("Exception during registering bot", e);
         }
     }
 }
