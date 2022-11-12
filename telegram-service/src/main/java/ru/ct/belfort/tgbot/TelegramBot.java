@@ -13,6 +13,8 @@ import ru.ct.belfort.UserDTO;
 import ru.ct.belfort.kafka.producers.TestProducer;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -66,33 +68,46 @@ public class TelegramBot extends TelegramLongPollingCommandBot {
         SendMessage sendMessage = new SendMessage();
         if (!handler.hasModeSet(message.getChatId())) {
             handler.setMode(message.getChatId(), ParsingMode.COMMAND);
+            sendMessage.setText("To begin trading, type /start");
+        } else {
+            ParsingMode mode = handler.getMode(message.getChatId());
+            if (mode == ParsingMode.COMMAND) {
+                sendMessage.setText("Unknown command!");
+            } else {
+                UserDTO current = getInfo(message.getChatId());
+                UserDTO newInfo = null;
+                switch (mode) {
+                    case FIGIS -> {
+                        newInfo = new UserDTO(current.id(), current.token(), current.strategy(),
+                                List.of(message.getText()));
+                        sendMessage.setText("Figis changed successfully");
+                    }
+                    case TOKEN -> {
+                        newInfo = new UserDTO(current.id(), message.getText(), current.strategy(),
+                                current.figis());
+                        sendMessage.setText("Token changed successfully");
+                    }
+                    case STRATEGY -> {
+                        newInfo = new UserDTO(current.id(), message.getText(), current.strategy(),
+                                current.figis());
+                        sendMessage.setText("Strategy changed successfully");
+                    }
+                    case INIT -> {
+                        String[] data = message.getText().split("\\s+");
+                        if (data.length != 3) {
+                            sendMessage.setText("Please follow selected format, " + data.length + " values were entered");
+                            break;
+                        }
+                        newInfo = new UserDTO(current.id(), data[0], data[1], Arrays.asList(Arrays.copyOfRange(data, 2, data.length)));
+                        sendMessage.setText("Default parameters set successfully");
+                        handler.setMode(message.getChatId(), ParsingMode.COMMAND);
+                    }
+
+                }
+                producer.sendMessage(newInfo);
+            }
         }
 
-        ParsingMode mode = handler.getMode(message.getChatId());
-        if (mode == ParsingMode.COMMAND) {
-            sendMessage.setText("Unknown command!");
-        } else {
-            UserDTO current = getInfo(message.getChatId());
-            UserDTO newInfo = null;
-            switch (mode) {
-                case FIGIS -> {
-                    newInfo = new UserDTO(current.id(), current.token(), current.strategy(),
-                            List.of(message.getText()));
-                    sendMessage.setText("Figis changed successfully");
-                }
-                case TOKEN -> {
-                    newInfo = new UserDTO(current.id(), message.getText(), current.strategy(),
-                            current.figis());
-                    sendMessage.setText("Token changed successfully");
-                }
-                case STRATEGY -> {
-                    newInfo = new UserDTO(current.id(), message.getText(), current.strategy(),
-                            current.figis());
-                    sendMessage.setText("Strategy changed successfully");
-                }
-            }
-            producer.sendMessage(newInfo);
-        }
         sendMessage.setChatId(message.getChatId());
         try {
             execute(sendMessage);

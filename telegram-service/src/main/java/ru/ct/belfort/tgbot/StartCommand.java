@@ -22,8 +22,9 @@ public class StartCommand extends AbstractCommand {
         msg.append(System.lineSeparator()).append("/figis");
         msg.append(System.lineSeparator()).append("/strategy");
         msg.append(System.lineSeparator()).append("/token");
+        msg.append(System.lineSeparator()).append("For now please enter your token, strategy and figis in that order separated by whitespace");
 
-        setMode(chat.getId(), ParsingMode.COMMAND);
+        setMode(chat.getId(), ParsingMode.INIT);
         sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), user.getUserName(),
                 msg.toString());
     }
