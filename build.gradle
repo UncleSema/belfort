@@ -55,6 +55,9 @@ subprojects {
             dependency "org.testcontainers:postgresql:$testcontainersVersion"
             // Tinkoff API
             dependency "ru.tinkoff.piapi:java-sdk-core:$tinkoffApiVersion"
+            //Telegram API
+            dependency "org.telegram:telegrambots:$telegramVersion"
+            dependency "org.telegram:telegrambotsextensions:$telegramVersion"
         }
     }
 }
