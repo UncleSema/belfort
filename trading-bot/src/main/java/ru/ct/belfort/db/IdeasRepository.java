@@ -26,7 +26,6 @@ public class IdeasRepository {
         jdbcTemplate.update("""
             INSERT INTO ideas(score, time) VALUES(?, CURRENT_TIMESTAMP(0))
         """, idea.score());
-        debugOutput();
     }
 
     public List<IdeaEntity> selectAll() {
@@ -37,20 +36,12 @@ public class IdeasRepository {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ideas", Integer.class);
     }
 
-    /*public IdeaEntity getLastRecord() {
-        return jdbcTemplate.query("SELECT * FROM ideas ORDER BY time DESC LIMIT 1", );
-    }*/
+    public IdeaEntity getLastRecord() {
+        return jdbcTemplate.query("SELECT * FROM ideas ORDER BY time DESC LIMIT 1", mapper).get(0);
+    }
 
     public void deleteAll() {
         jdbcTemplate.update("DELETE FROM ideas");
-    }
-
-    // TODO: Remove this when db tests appear
-    private void debugOutput() {
-        log.info("Inserted");
-        for (IdeaEntity it : selectAll()) {
-            log.info(it.toString());
-        }
     }
 
     private static class IdeaEntityMapper implements RowMapper<IdeaEntity> {

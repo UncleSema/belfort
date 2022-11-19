@@ -1,15 +1,16 @@
 package ru.ct.belfort.db;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ct.belfort.TradingInfoDTO;
 import ru.ct.belfort.base.KafkaAndPostgresTestBase;
 import ru.ct.belfort.kafka.consumers.CandlesConsumerConfig;
+import ru.ct.belfort.strategy.RsiStrategy;
 
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.ct.belfort.Utils.*;
 
 public class PostgresTest extends KafkaAndPostgresTestBase {
@@ -29,7 +30,9 @@ public class PostgresTest extends KafkaAndPostgresTestBase {
         final var message = badCandlesSample();
         var before = repository.getRecordsAmount();
         sendAndWait(message);
-        Assertions.assertEquals(before + 1, repository.getRecordsAmount());
+        assertEquals(before + 1, repository.getRecordsAmount());
+        double score = new RsiStrategy().predict(message.candles());
+        assertEquals(repository.getLastRecord().score(), score);
     }
 
     @Test
@@ -37,20 +40,22 @@ public class PostgresTest extends KafkaAndPostgresTestBase {
         final var message = goodCandlesSample();
         var before = repository.getRecordsAmount();
         sendAndWait(message);
-        Assertions.assertEquals(before + 1, repository.getRecordsAmount());
+        assertEquals(before + 1, repository.getRecordsAmount());
+        double score = new RsiStrategy().predict(message.candles());
+        assertEquals(repository.getLastRecord().score(), score);
     }
 
     @Test
     public void sendOkCandles_ExpectNoDBInsertion() {
         var before = repository.getRecordsAmount();
         sendAndWait(okCandlesSample());
-        Assertions.assertEquals(before, repository.getRecordsAmount());
+        assertEquals(before, repository.getRecordsAmount());
     }
 
     @Test
     public void sendUnknownStrategy_ExpectNoDBInsertion() {
         var before = repository.getRecordsAmount();
         sendAndWait(unknownStrategySample());
-        Assertions.assertEquals(before, repository.getRecordsAmount());
+        assertEquals(before, repository.getRecordsAmount());
     }
 }
