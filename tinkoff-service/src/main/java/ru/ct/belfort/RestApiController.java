@@ -23,7 +23,7 @@ public class RestApiController {
         return "Tinkoff service is working! Token=" + tinkoffToken;
     }
     @GetMapping("/tinkoff-api-test")
-    public String tinkoff() {
+    public String incorrectToken() {
         producer.sendMessage(new UserDTO(1,
                 tinkoffToken,
                 "someStrategy",

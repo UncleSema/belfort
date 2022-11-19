@@ -12,7 +12,6 @@ import ru.ct.belfort.util.Utilities;
 import ru.tinkoff.piapi.contract.v1.Candle;
 import ru.tinkoff.piapi.contract.v1.MarketDataResponse;
 import ru.tinkoff.piapi.contract.v1.Quotation;
-
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,8 +88,6 @@ public class CandlesProducerTest {
         Mockito.verify(producer, Mockito.times(1))
                 .sendMessage(any());
     }
-
-
 }
 
 
