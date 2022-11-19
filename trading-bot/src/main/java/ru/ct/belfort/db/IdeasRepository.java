@@ -24,7 +24,7 @@ public class IdeasRepository {
 
     public void insert(IdeaDTO idea) {
         jdbcTemplate.update("""
-            INSERT INTO ideas(score, time) VALUES(?, CURRENT_TIMESTAMP(0))
+            INSERT INTO ideas(score, time) VALUES(?, CURRENT_TIMESTAMP)
         """, idea.score());
     }
 

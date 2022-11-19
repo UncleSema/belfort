@@ -3,6 +3,8 @@ package ru.ct.belfort.db;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ct.belfort.TradingInfoDTO;
 import ru.ct.belfort.base.KafkaAndPostgresTestBase;
 import ru.ct.belfort.kafka.consumers.CandlesConsumerConfig;
@@ -13,6 +15,8 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.ct.belfort.Utils.*;
 
+@Testcontainers
+@SpringBootTest
 public class PostgresTest extends KafkaAndPostgresTestBase {
 
     @Autowired
