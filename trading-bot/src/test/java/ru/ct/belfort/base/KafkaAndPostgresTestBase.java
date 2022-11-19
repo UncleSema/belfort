@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.KafkaContainer;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 @SpringBootTest
 @Testcontainers
+@DirtiesContext
 public abstract class KafkaAndPostgresTestBase {
 
     @Container
