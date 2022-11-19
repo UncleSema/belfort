@@ -33,6 +33,14 @@ public class IdeasRepository {
         return jdbcTemplate.query("SELECT * FROM ideas", mapper);
     }
 
+    public Integer getRecordsAmount() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ideas", Integer.class);
+    }
+
+    /*public IdeaEntity getLastRecord() {
+        return jdbcTemplate.query("SELECT * FROM ideas ORDER BY time DESC LIMIT 1", );
+    }*/
+
     public void deleteAll() {
         jdbcTemplate.update("DELETE FROM ideas");
     }

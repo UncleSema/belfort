@@ -39,4 +39,32 @@ public class Utils {
         var candles = genRandomCandles(10, 5, 10);
         return new TradingInfoDTO(candles, strategy);
     }
+
+    public static TradingInfoDTO badCandlesSample() {
+        return new TradingInfoDTO(
+                closePricesToCandles(new double[]{500, 493, 491, 485, 483, 482, 480, 467, 463, 461}),
+                "rsi"
+        );
+    }
+
+    public static TradingInfoDTO goodCandlesSample() {
+        return new TradingInfoDTO(
+                closePricesToCandles(new double[]{500, 505, 517, 523, 524, 525, 536, 541, 547, 555}),
+                "rsi"
+        );
+    }
+
+    public static TradingInfoDTO okCandlesSample() {
+        return new TradingInfoDTO(
+                closePricesToCandles(new double[]{500, 500, 500, 500, 500, 500, 500, 500, 500, 500}),
+                "rsi"
+        );
+    }
+
+    public static TradingInfoDTO unknownStrategySample() {
+        return new TradingInfoDTO(
+                closePricesToCandles(new double[]{}),
+                "fds7f757das78f7sd"
+        );
+    }
 }
