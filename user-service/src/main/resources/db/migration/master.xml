@@ -12,4 +12,12 @@
         <sqlFile path="db/migration/sql/create_users.sql"/>
     </changeSet>
 
+
+    <changeSet author="GrunskiiAlexey" id="1.1.0">
+        <sqlFile path="db/migration/sql/create_correct_users.sql"/>
+    </changeSet>
+
+    <changeSet author="GrunskiiAlexey" id="1.2.0">
+        <sqlFile path="db/migration/sql/create_figis.sql"/>
+    </changeSet>
 </databaseChangeLog>
