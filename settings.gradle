@@ -22,4 +22,4 @@ include 'trading-bot'
 include 'telegram-service'
 include 'tinkoff-service'
 include 'api'
-
+include 'user-service'
