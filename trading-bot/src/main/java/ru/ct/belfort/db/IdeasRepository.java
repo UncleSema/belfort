@@ -24,25 +24,24 @@ public class IdeasRepository {
 
     public void insert(IdeaDTO idea) {
         jdbcTemplate.update("""
-            INSERT INTO ideas(score, time) VALUES(?, CURRENT_TIMESTAMP(0))
+            INSERT INTO ideas(score, time) VALUES(?, CURRENT_TIMESTAMP)
         """, idea.score());
-        debugOutput();
     }
 
     public List<IdeaEntity> selectAll() {
         return jdbcTemplate.query("SELECT * FROM ideas", mapper);
     }
 
-    public void deleteAll() {
-        jdbcTemplate.update("DELETE FROM ideas");
+    public Integer getRecordsAmount() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ideas", Integer.class);
     }
 
-    // TODO: Remove this when db tests appear
-    private void debugOutput() {
-        log.info("Inserted");
-        for (IdeaEntity it : selectAll()) {
-            log.info(it.toString());
-        }
+    public IdeaEntity getLastRecord() {
+        return jdbcTemplate.query("SELECT * FROM ideas ORDER BY time DESC LIMIT 1", mapper).get(0);
+    }
+
+    public void deleteAll() {
+        jdbcTemplate.update("DELETE FROM ideas");
     }
 
     private static class IdeaEntityMapper implements RowMapper<IdeaEntity> {
