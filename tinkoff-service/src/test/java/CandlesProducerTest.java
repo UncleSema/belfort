@@ -11,8 +11,8 @@ import ru.ct.belfort.subscribers.CandleSubscriber;
 import ru.ct.belfort.util.Utilities;
 import ru.tinkoff.piapi.contract.v1.Candle;
 import ru.tinkoff.piapi.contract.v1.MarketDataResponse;
-import ru.tinkoff.piapi.contract.v1.Quotation;
 import static org.mockito.ArgumentMatchers.any;
+import static ru.ct.belfort.util.Utilities.makeQuotation;
 
 @ExtendWith(MockitoExtension.class)
 public class CandlesProducerTest {
@@ -52,21 +52,13 @@ public class CandlesProducerTest {
 
         Candle tinkoffCandle = Candle.newBuilder().
                 setLow(
-                        Quotation.newBuilder().
-                                setUnits(23).
-                                setNano(32).build()
+                        makeQuotation(23, 32)
                 ).setHigh(
-                        Quotation.newBuilder().
-                                setUnits(111).
-                                setNano(1323231214).build()
+                        makeQuotation(111, 1323231214)
                 ).setOpen(
-                        Quotation.newBuilder().
-                                setUnits(3123).
-                                setNano(121231233).build()
+                        makeQuotation(3123, 121231233)
                 ).setClose(
-                        Quotation.newBuilder().
-                                setUnits(1231).
-                                setNano(312315).build()
+                        makeQuotation(1231,312315)
                 ).setVolume(
                         888
                 ).build();

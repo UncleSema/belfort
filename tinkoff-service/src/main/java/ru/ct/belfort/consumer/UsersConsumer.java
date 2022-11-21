@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.ct.belfort.CandleSubscriptionService;
 import ru.ct.belfort.OperationSubscriptionService;
 import ru.ct.belfort.UserDTO;
-import ru.ct.belfort.client.TinkoffClient;
 import ru.ct.belfort.client.TinkoffClientService;
 import ru.ct.belfort.producer.ErrorsProducer;
 
@@ -30,16 +29,15 @@ public class UsersConsumer {
     public void consume(ConsumerRecord<String, UserDTO> record) {
         log.info("Message is delivered!");
         UserDTO dto = record.value();
-        TinkoffClient client = tinkoffClientService.getClientByToken(dto.token());
-        if (!client.isTokenValid()) {
+        if (!tinkoffClientService.isTokenValid(dto.token())) {
             log.error("Invalid token!");
             errorsProducer.sendMessage("Token=" + dto.token() + " -- is invalid");
-        } else if (!client.isListOfFigisValid(dto.figis())) {
+        } else if (!tinkoffClientService.isListOfFigisValid(dto.token(), dto.figis())) {
             log.error("Invalid list of figis!");
             errorsProducer.sendMessage("ListOfFigis=" + dto.figis() + " -- is invalid");
         } else {
-            candleSubscriptionService.subscribe(client, dto.figis());
-            operationSubscriptionService.subscribe(client);
+            candleSubscriptionService.subscribe(dto.token(), dto.figis());
+            operationSubscriptionService.subscribe(dto.token());
         }
     }
 }

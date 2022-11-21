@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.ct.belfort.client.TinkoffClient;
+import ru.ct.belfort.client.TinkoffClientService;
 import ru.ct.belfort.producer.CandlesProducer;
 import ru.ct.belfort.subscribers.CandleSubscriber;
 import java.util.List;
@@ -17,16 +17,17 @@ public class CandleSubscriptionService {
 
     @NonNull
     private final CandlesProducer candlesProducer;
+    private final TinkoffClientService tinkoffClientService;
 
-    public void subscribe(TinkoffClient client, List<String> figis) {
+    public void subscribe(String token, List<String> figis) {
         log.info("New subscribe");
         CandleSubscriber subs = new CandleSubscriber(candlesProducer);
-        Consumer<Throwable> onErrorCallback = error -> log.error(error.toString());
-        client.subscribeCandles(figis, subs, onErrorCallback);
+        Consumer<Throwable> onErrorCallback = error -> log.error("Error while trying to subscribe on candles", error);
+        tinkoffClientService.subscribeCandles(token, figis, subs, onErrorCallback);
     }
 
-    public void unsubscribe(TinkoffClient client, List<String> figis) {
+    public void unsubscribe(String token, List<String> figis) {
         log.info("unsubscribe");
-        client.unsubscribeCandles(figis);
+        tinkoffClientService.unsubscribeCandles(token, figis);
     }
 }

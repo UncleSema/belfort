@@ -22,6 +22,8 @@ public class OperationSubscriber implements StreamProcessor<PositionsStreamRespo
             log.info(response.getPosition().toString());
 
             producer.sendMessage(Utilities.create(response.getPosition()));
+        } else {
+            log.warn("Got unknown message: {}", response);
         }
     }
 }

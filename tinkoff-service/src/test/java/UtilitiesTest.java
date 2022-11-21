@@ -7,6 +7,8 @@ import ru.ct.belfort.PositionsSecuritiesDTO;
 import ru.ct.belfort.util.Utilities;
 import ru.tinkoff.piapi.contract.v1.*;
 
+import static ru.ct.belfort.util.Utilities.makeQuotation;
+
 public class UtilitiesTest {
     @Test
     void makeDoubleTest() {
@@ -17,6 +19,9 @@ public class UtilitiesTest {
                 .setUnits(123)
                 .setNano(123456789)
                 .build()), 123.123456789);
+
+        MoneyValue m = MoneyValue.newBuilder().setUnits(1312323).setNano(123).build();
+        System.out.println(m);
     }
 
     @Test
@@ -102,5 +107,19 @@ public class UtilitiesTest {
 
         Assertions.assertEquals(tinkoffMoney.getUnits(), ourDto.units());
         Assertions.assertEquals(tinkoffMoney.getNano(), ourDto.nano());
+    }
+
+    @Test
+    void makeQuotationTest() {
+        Quotation qu = Quotation
+                .newBuilder()
+                .setUnits(123)
+                .setNano(123123)
+                .build();
+        Quotation mine = makeQuotation(123, 123123);
+        Assertions.assertEquals(qu.getNano(), mine.getNano());
+        Assertions.assertEquals(qu.getNano(), 123123);
+        Assertions.assertEquals(qu.getUnits(), mine.getUnits());
+        Assertions.assertEquals(qu.getUnits(), 123);
     }
 }
