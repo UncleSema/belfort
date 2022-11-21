@@ -12,12 +12,17 @@
         <sqlFile path="db/migration/sql/create_users.sql"/>
     </changeSet>
 
-
     <changeSet author="GrunskiiAlexey" id="1.1.0">
         <sqlFile path="db/migration/sql/create_correct_users.sql"/>
     </changeSet>
 
     <changeSet author="GrunskiiAlexey" id="1.2.0">
         <sqlFile path="db/migration/sql/create_figis.sql"/>
+    </changeSet>
+
+    <changeSet id="GrunskiiAlexey" author="2.0.0">
+        <sqlFile path="db/migration/sql/create_operation.sql"/>
+        <dropTable tableName="users"/>
+        <renameTable oldTableName="users_table" newTableName="users"/>
     </changeSet>
 </databaseChangeLog>
