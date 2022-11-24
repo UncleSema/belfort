@@ -58,4 +58,10 @@ public class Utilities {
     public static double makeDouble(Quotation quotation) {
         return makeDouble(quotation.getUnits(), quotation.getNano());
     }
+
+    public static Quotation makeQuotation(long units, int nano) {
+        return Quotation.newBuilder().
+                setUnits(units).
+                setNano(nano).build();
+    }
 }

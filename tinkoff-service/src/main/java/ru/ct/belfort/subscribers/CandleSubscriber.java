@@ -20,8 +20,9 @@ public class CandleSubscriber implements StreamProcessor<MarketDataResponse> {
         if (response.hasCandle()) {
             log.info("New candle!");
             log.info(response.getCandle().toString());
-
             producer.sendMessage(Utilities.create(response.getCandle()));
+        } else {
+            log.warn("Got unknown message: {}", response);
         }
     }
 }

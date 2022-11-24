@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.ct.belfort.CandleSubscriptionService;
 import ru.ct.belfort.OperationSubscriptionService;
 import ru.ct.belfort.UserDTO;
+import ru.ct.belfort.client.TinkoffClientService;
+import ru.ct.belfort.producer.ErrorsProducer;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,13 +19,25 @@ public class UsersConsumer {
     private final CandleSubscriptionService candleSubscriptionService;
     private final OperationSubscriptionService operationSubscriptionService;
 
+    private final TinkoffClientService tinkoffClientService;
+
+    private final ErrorsProducer errorsProducer;
+
     @KafkaListener(topics = "ct.belfort.telegram.users",
             groupId = "tinkoff_service_consumers",
             containerFactory = "UsersConsumerContainerFactory")
     public void consume(ConsumerRecord<String, UserDTO> record) {
         log.info("Message is delivered!");
         UserDTO dto = record.value();
-        candleSubscriptionService.subscribe(dto.token(), dto.figis());
-        operationSubscriptionService.subscribe(dto.token());
+        if (!tinkoffClientService.isTokenValid(dto.token())) {
+            log.error("Invalid token!");
+            errorsProducer.sendMessage("Token=" + dto.token() + " -- is invalid");
+        } else if (!tinkoffClientService.isListOfFigisValid(dto.token(), dto.figis())) {
+            log.error("Invalid list of figis!");
+            errorsProducer.sendMessage("ListOfFigis=" + dto.figis() + " -- is invalid");
+        } else {
+            candleSubscriptionService.subscribe(dto.token(), dto.figis());
+            operationSubscriptionService.subscribe(dto.token());
+        }
     }
 }

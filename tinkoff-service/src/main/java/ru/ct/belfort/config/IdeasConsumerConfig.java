@@ -8,15 +8,17 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import ru.ct.belfort.UserDTO;
+import ru.ct.belfort.IdeaDTO;
+
 import java.util.Map;
+
 import static ru.ct.belfort.KafkaConfig.bootstrapAddress;
 import static ru.ct.belfort.KafkaConfig.consumersGroupId;
 
 @Configuration
-public class UsersConsumerConfig {
+public class IdeasConsumerConfig {
     @Bean
-    public ConsumerFactory<String, UserDTO> UsersConsumerFactory() {
+    public ConsumerFactory<String, IdeaDTO> IdeasConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress,
                 ConsumerConfig.GROUP_ID_CONFIG, consumersGroupId,
@@ -27,11 +29,11 @@ public class UsersConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserDTO>
-    UsersConsumerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, UserDTO> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, IdeaDTO>
+    IdeasConsumerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, IdeaDTO> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(UsersConsumerFactory());
+        factory.setConsumerFactory(IdeasConsumerFactory());
         return factory;
     }
 }
