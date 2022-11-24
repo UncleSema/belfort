@@ -1,20 +1,18 @@
 package ru.ct.belfort.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ct.belfort.exceptions.NoTinkoffAccountException;
 import ru.ct.belfort.subscribers.CandleSubscriber;
 import ru.ct.belfort.subscribers.OperationSubscriber;
-import ru.tinkoff.piapi.contract.v1.Account;
-import ru.tinkoff.piapi.contract.v1.AccountType;
+import ru.tinkoff.piapi.contract.v1.*;
 import ru.tinkoff.piapi.core.InvestApi;
 import ru.tinkoff.piapi.core.exception.ApiRuntimeException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
+@Slf4j
 @Service
 public class TinkoffClientService {
     private final Map<String, InvestApi> api = new HashMap<>();
@@ -74,7 +72,7 @@ public class TinkoffClientService {
         subsService.unsubscribeCandles(figis);
     }
 
-    public void subscribeOperations(String token, OperationSubscriber subscriber, Consumer<Throwable> onErrorCallback) {
+    private String getMainAccountId(String token) {
         List<Account> accounts = getAccountsList(token);
         Optional<Account> br = accounts
                 .stream()
@@ -83,7 +81,20 @@ public class TinkoffClientService {
         if (br.isEmpty()) {
             throw new NoTinkoffAccountException();
         }
-        var mainAccountId = br.get().getId();
+        return br.get().getId();
+    }
+
+    private Quotation getLastPriceByFigi(String token, String figi) {
+        var currentApi = getApiByToken(token);
+        return currentApi
+                .getMarketDataService()
+                .getLastPricesSync(List.of(figi))
+                .get(0)
+                .getPrice();
+    }
+
+    public void subscribeOperations(String token, OperationSubscriber subscriber, Consumer<Throwable> onErrorCallback) {
+        var mainAccountId = getMainAccountId(token);
         getApiByToken(token).getOperationsStreamService().subscribePositions(
                 subscriber,
                 onErrorCallback,
@@ -92,5 +103,39 @@ public class TinkoffClientService {
 
     public void unsubscribeOperations(String token) {
         //TODO()
+    }
+
+    //Should I handle exceptions? (For example if there is no lots of that figi?)
+    public void sellByFigi(String token, String figi) {
+        var mainAccountId = getMainAccountId(token);
+        var currentApi = getApiByToken(token);
+        var lastPrice = getLastPriceByFigi(token, figi);
+        currentApi
+                .getOrdersService()
+                .postOrderSync(figi,
+                        1,
+                        lastPrice,
+                        OrderDirection.ORDER_DIRECTION_SELL,
+                        mainAccountId,
+                        OrderType.ORDER_TYPE_LIMIT,
+                UUID.randomUUID().toString());
+        log.info("Posted order to sell figi=" + figi);
+    }
+
+    //Should I handle exceptions? (For example if there is no money?)
+    public void buyByFigi(String token, String figi) {
+        var mainAccountId = getMainAccountId(token);
+        var currentApi = getApiByToken(token);
+        var lastPrice = getLastPriceByFigi(token, figi);
+        currentApi
+                .getOrdersService()
+                .postOrderSync(figi,
+                        1,
+                        lastPrice,
+                        OrderDirection.ORDER_DIRECTION_BUY,
+                        mainAccountId,
+                        OrderType.ORDER_TYPE_LIMIT,
+                        UUID.randomUUID().toString());
+        log.info("Posted order to buy figi=" + figi);
     }
 }
