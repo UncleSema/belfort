@@ -30,3 +30,12 @@ services:
       POSTGRES_DB: trading_bot
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+
+  postgres_user:
+    image: postgres
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_DB: user_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres

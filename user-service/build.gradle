@@ -7,6 +7,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.slf4j:slf4j-simple'
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.liquibase:liquibase-core'
+    implementation 'org.springframework:spring-jdbc'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     implementation(project(":api"))
 }
 

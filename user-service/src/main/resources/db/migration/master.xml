@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="GrunskiiAlexey" id="1.0.0">
+        <sqlFile path="db/migration/sql/create_users.sql"/>
+    </changeSet>
+
+    <changeSet author="GrunskiiAlexey" id="1.1.0">
+        <sqlFile path="db/migration/sql/create_correct_users.sql"/>
+    </changeSet>
+
+    <changeSet author="GrunskiiAlexey" id="1.2.0">
+        <sqlFile path="db/migration/sql/create_figis.sql"/>
+    </changeSet>
+
+    <changeSet author="GrunskiiAlexey" id="2.0.0">
+        <sqlFile path="db/migration/sql/create_operation.sql"/>
+        <dropTable tableName="users"/>
+        <renameTable oldTableName="users_table" newTableName="users"/>
+    </changeSet>
+
+    <changeSet author="GrunskiiAlexey" id="2.1.0">
+        <addColumn tableName="operations">
+            <column name="parent_id" type="integer"/>
+        </addColumn>    
+        <sql>
+            SELECT * FROM users
+            INNER JOIN figis
+                ON users.id = figis.id
+        </sql>
+        <sql>
+            SELECT * FROM users
+            INNER JOIN operations
+                ON users.id = operations.id
+        </sql>
+    </changeSet>
+</databaseChangeLog>
