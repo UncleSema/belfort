@@ -20,13 +20,13 @@
         <sqlFile path="db/migration/sql/create_figis.sql"/>
     </changeSet>
 
-    <changeSet id="GrunskiiAlexey" author="2.0.0">
+    <changeSet author="GrunskiiAlexey" id="2.0.0">
         <sqlFile path="db/migration/sql/create_operation.sql"/>
         <dropTable tableName="users"/>
         <renameTable oldTableName="users_table" newTableName="users"/>
     </changeSet>
 
-    <changeSet id="GrunskiiAlexey" author="2.1.0">
+    <changeSet author="GrunskiiAlexey" id="2.1.0">
         <addColumn tableName="operations">
             <column name="parent_id" type="integer"/>
         </addColumn>    
